@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marvel Comics</title>
+
+  <link rel="stylesheet" href="{% static 'css/productcatagory.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="navbar">
+      <div class="nav-logo">
+        <div class="logo"></div>
+      </div>
+
+      <div class="nav-links">
+        <a href="{% url 'home_page'%}">Home</a>
+        <a href="#" class="active">Marvel Comics</a>
+        <a href="{% url 'aboutus' %}">About Us</a>
+        <a href="{% url 'contactinformation'%}">Contact Us</a>
+      </div>
+
+      <div class="nav-icons">
+        <i class="fa fa-search"></i>
+        <i class="fa fa-bag-shopping"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Heading -->
+  <h2 class="heading">Marvel Comics</h2>
+
+  <section class="collections">
+  {% for comic in comics %}
+    <div class="collection-item">
+      <img src="{{ comic.image.url }}" alt="{{ comic.title }}">
+      <p>{{ comic.title }}</p>
+      <p>₹{{ comic.price }}</p>
+      {% if comic.author %}
+        <small>by {{ comic.author }}</small>
+      {% endif %}
+    </div>
+  {% empty %}
+    <p>No comics available right now.</p>
+  {% endfor %}
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-container">
+      <!-- Social Media -->
+      <div class="footer-section">
+        <h3>Follow us on our Social Media</h3>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Bulk Purchase</a></li>
+          <li><a href="#">Return & Replacement</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- About Section -->
+      <div class="footer-section about">
+        <h3>About the shop</h3>
+        <p>Sample description about the bookstore.</p>
+        <img src="logo.png" alt="Shop Logo" class="footer-logo">
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025, Family Book Store</p>
+      <div class="payment-icons">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="MasterCard">
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

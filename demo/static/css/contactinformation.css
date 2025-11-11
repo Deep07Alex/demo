@@ -1,0 +1,257 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Header section */
+
+/* Navbar layout */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 65px;
+  padding: 0 40px;
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+/* Logo Section */
+.nav-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  background-image: url('../images/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Navigation links */
+.nav-links {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+}
+
+.nav-links a {
+  color: #333;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+
+.nav-links a.active {
+  border-bottom: 1px solid #000;
+}
+
+.nav-links a:hover {
+  border-bottom: 1px solid #000;
+}
+
+/* Icons section */
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-icons i {
+  color: #000;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Header done */
+
+
+/* main */
+
+.canvus{
+  height: 180px;
+  width: 100%;
+}
+
+.contact h1{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: rgb(18, 18, 18);
+  display: block;
+  font-family: Nunito, sans-serif;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  height: 52px;
+  letter-spacing: 0.6px;
+  line-height: 52px;
+  margin-block-end: 26.8px;
+  margin-block-start: 26.8px;
+  margin-inline-end: 0px;
+  margin-inline-start: 0px;
+  text-align: center;
+  margin: 30px 30px;
+}
+
+.mailid{
+  height: 30px;
+  width: 100%;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  padding-right: 200px;
+  box-sizing: border-box;
+  color: rgba(18, 18, 18, 0.75);
+  display: block;
+  font-family: "Assistant", sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  height: 28.7969px;
+  letter-spacing: 0.6px;
+  line-height: 28.8px;
+  margin-block-end: 16px;
+  margin-block-start: 0px;
+  margin-inline-end: 0px;
+  margin-inline-start: 0px;
+  margin-top: 0px;
+  unicode-bidi: isolate;
+}
+
+
+
+.address{
+  height: 30px;
+  width: 100%;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  padding-right: 330px;
+  box-sizing: border-box;
+  color: rgba(18, 18, 18, 0.75);
+  display: block;
+  font-family: "Assistant", sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  height: 28.7969px;
+  letter-spacing: 0.6px;
+  line-height: 28.8px;
+  margin-block-end: 16px;
+  margin-block-start: 0px;
+  margin-inline-end: 0px;
+  margin-inline-start: 0px;
+  margin-top: 0px;
+  unicode-bidi: isolate;
+}
+
+
+
+
+/* Footer section */
+
+.footer {
+  background-color: #1e222b;
+  color: #fff;
+  padding: 50px 80px 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+  padding-bottom: 30px;
+}
+
+.footer-section {
+  flex: 1 1 250px;
+  margin: 20px;
+}
+
+.footer-section h3 {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+  color: #fff;
+}
+
+.social-icons a {
+  color: #ccc;
+  margin-right: 15px;
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.social-icons a:hover {
+  color: #fff;
+}
+
+.about p {
+  line-height: 1.6;
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.footer-logo {
+  width: 60px;
+  background-color: #000;
+  border-radius: 10px;
+  
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.payment-icons img {
+  width: 40px;
+  margin: 0 8px;
+  vertical-align: middle;
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-section {
+    margin: 15px 0;
+  }
+}
+
+/* Footer Section done */

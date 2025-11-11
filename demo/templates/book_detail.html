@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ book.title }} | Family BookStore</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header>
+    <a href="/" style="text-decoration:none;color:black;">← Back to Home</a>
+  </header>
+
+  <main style="padding:2rem;text-align:center;">
+    <h1>{{ book.title }}</h1>
+    <img src="{{ book.image.url }}" alt="{{ book.title }}" style="width:200px;height:auto;">
+    <p><strong>Price:</strong> ₹{{ book.price }}</p>
+    {% if book.old_price %}
+      <p><del>₹{{ book.old_price }}</del></p>
+    {% endif %}
+    {% if book.on_sale %}
+      <p style="color:red;">On Sale!</p>
+    {% endif %}
+    <p><em>Added on:</em> {{ book.date_added|date:"F j, Y" }}</p>
+  </main>
+
+  <footer style="text-align:center;padding:1rem;">
+    <p>© 2025 Family BookStore</p>
+  </footer>
+</body>
+</html>
