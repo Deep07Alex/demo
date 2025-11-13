@@ -91,6 +91,79 @@
   color: #ddd;
 }
 
+
+/* Content section */
+.book-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 30px;
+  justify-items: center;
+  text-align: center;
+  padding: 60px 40px;
+  background: #fff;
+}
+
+.category {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.category img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  background-color: #f4f4f4;
+  padding: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.category p {
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  transition: color 0.4s ease;
+}
+
+/* Hover animation */
+.category:hover {
+  transform: translateY(-10px);
+}
+
+.category:hover img {
+  transform: scale(1.1) rotate(8deg);
+  box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+  border: 2px solid #007bff;
+}
+
+.category:hover p {
+  color: #007bff;
+}
+
+/* Optional glowing ring effect */
+.category img::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.category:hover img::after {
+  border-color: #007bff;
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.6);
+}
+
+
+
+
 /* ---------- Main Content ---------- */
 .book-sale {
   display: flex;
