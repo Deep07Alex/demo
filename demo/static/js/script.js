@@ -81,17 +81,58 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// ---------------- View Button (Main Section) ----------------
+// ---------------- View Buttons ----------------
 document.addEventListener("DOMContentLoaded", function () {
-  const btn = document.querySelector(".view-btn");
+  const saleBtn = document.querySelector("#btn1");
+  const romanceBtn = document.querySelector("#btn2");
+  const tredingbtn = document.querySelector("#btn3");
 
-  if (btn) {
-    btn.addEventListener("click", function (e) {
+  if (saleBtn) {
+    saleBtn.addEventListener("click", function (e) {
       e.preventDefault();
       window.location.href = "/sale/"; 
     });
   }
+
+  if (romanceBtn) {
+    romanceBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.location.href = "/romance/"; 
+    });
+  }
+
+  if (tredingbtn) {
+    tredingbtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.location.href = "/treding/"; 
+    });
+  }
 });
+
+
+
+// Quantity Counter banner
+document.addEventListener("DOMContentLoaded", () => {
+  const qtyDisplay = document.getElementById('qty');
+  const plus = document.getElementById('plus');
+  const minus = document.getElementById('minus');
+  let quantity = 1;
+
+  plus.addEventListener('click', () => {
+    quantity++;
+    qtyDisplay.textContent = quantity;
+  });
+
+  minus.addEventListener('click', () => {
+    if (quantity > 1) {
+      quantity--;
+      qtyDisplay.textContent = quantity;
+    }
+  });
+});
+
+
+
 
 
 // ---------------- Pagination ----------------

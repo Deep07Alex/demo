@@ -46,10 +46,10 @@
     </div>
   </section>
 
-
+  <!-- Books catagories -->
   <section class="book-categories">
   <div class="category">
-    <img src="selfhelp.png" alt="Self-help">
+    <img src="/demo/static/images/sale.avif" alt="">
     <p>Self-help (On Sale)</p>
   </div>
   <div class="category">
@@ -89,36 +89,135 @@
 
 
 
-  <!-- Main Content -->
-  <main class="book-sale">
-    <h2 class="section-title">SELF-HELP ON SALE</h2>
+  <!-- Sale Content -->
+  <section class="book-sale">
+  <h2 class="section-title">SELF-HELP ON SALE</h2>
 
-    <div class="book-grid">
-      {% for book in books %}
-        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-          <div class="book-card">
-            <img src="{{ book.image.url }}" alt="{{ book.title }}">
-            <span class="sale-tag">Sale</span>
-            <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
-              <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-            {% else %}
-              <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
-            <button class="cart-btn">Add to cart</button>
-          </div>
-        </a>
-      {% empty %}
-        <p style="text-align:center;">No books available right now.</p>
-      {% endfor %}
+  <div class="book-grid">
+    {% for book in books %}
+      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+        <div class="book-card">
+          <img src="{{ book.image.url }}" alt="{{ book.title }}">
+          <span class="sale-tag">Sale</span>
+          <h3 class="book-title">{{ book.title }}</h3>
+          {% if book.old_price %}
+            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
+          {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+          {% endif %}
+          <button class="cart-btn">Add to cart</button>
+        </div>
+      </a>
+    {% empty %}
+      <p style="text-align:center;">No books available right now.</p>
+    {% endfor %}
+  </div>
+
+  <div class="view-all">
+    <button class="view-btn" id="btn1">View all</button>
+  </div>
+  </section>
+
+  <!-- Romance Content -->
+  <section class="book-sale">
+  <h2 class="section-title">ROMANCE</h2>
+
+  <div class="book-grid">
+    {% for book in books %}
+      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+        <div class="book-card">
+          <img src="{{ book.image.url }}" alt="{{ book.title }}">
+          <span class="sale-tag">Sale</span>
+          <h3 class="book-title">{{ book.title }}</h3>
+          {% if book.old_price %}
+            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
+          {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+          {% endif %}
+          <button class="cart-btn">Add to cart</button>
+        </div>
+      </a>
+    {% empty %}
+      <p style="text-align:center;">No books available right now.</p>
+    {% endfor %}
+  </div>
+
+  <div class="view-all">
+    <button class="view-btn" id="btn2">View all</button>
+  </div>
+  </section>
+
+  <!-- Treding Content -->
+  <section class="book-sale">
+  <h2 class="section-title">TRADING & FINANCE</h2>
+
+  <div class="book-grid">
+    {% for book in books %}
+      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+        <div class="book-card">
+          <img src="{{ book.image.url }}" alt="{{ book.title }}">
+          <span class="sale-tag">Sale</span>
+          <h3 class="book-title">{{ book.title }}</h3>
+          {% if book.old_price %}
+            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
+          {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+          {% endif %}
+          <button class="cart-btn">Add to cart</button>
+        </div>
+      </a>
+    {% empty %}
+      <p style="text-align:center;">No books available right now.</p>
+    {% endfor %}
+  </div>
+
+  <div class="view-all">
+    <button class="view-btn" id="btn3">View all</button>
+  </div>
+  </section>
+
+  <!-- Banner Section -->
+  <section class="banner">
+  <div class="banner_container">
+
+    <div class="banner_card">
+      <!-- Book Combo Image (Left Side) -->
+      <div class="banner-image">
+        <img src="https://99bookstores.com/cdn/shop/files/1_b7fbebdd-738a-4a87-9b5e-72746619c9f8.png?v=1760611903&width=600" alt="Special 99 Box Combo">
+      </div>
+
+      <!-- Product Info (Right Side) -->
+      <div class="product">
+        <div class="store-name">99BOOKSTORE</div>
+        <div class="title">Special 99 Box (16 Books Combo) 🎁</div>
+        <div>
+          <span class="old-price">Rs. 7,999.00</span>
+          <span class="new-price"> Rs. 1,599.00 </span>
+          <span class="sale">Sale</span>
+        </div>
+        <div class="shipping">Shipping calculated at checkout.</div>
+
+        <div class="quantity">
+          <div id="minus">−</div>
+          <span id="qty">1</span>
+          <div id="plus">+</div>
+        </div>
+
+        <button class="cart-btn">Add to cart</button>
+        <div class="buy-now">BUY NOW →</div>
+      </div>
     </div>
 
+  </div>
+  </section>
 
 
-    <div class="view-all">
-      <button class="view-btn">View all</button>
-    </div>
-  </main>
+
+
+
+
+
+
 
   <!-- Footer -->
   <footer class="footer">
