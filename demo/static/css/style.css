@@ -7,8 +7,6 @@
 
 body {
   background: #fff8f9;
-  
-
 }
 
 
@@ -178,6 +176,7 @@ body {
   align-items: center;
   padding: 60px 20px;
   width: 100%;
+  
 }
 
 .section-title {
@@ -210,6 +209,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  margin-left: 50px;
 }
 
 .book-card img {
@@ -289,13 +289,19 @@ body {
   background-color: #a8004e;
 }
 
+.book-grid{
+  background-color: white;
+  padding: 40px 20px 40px 20px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
 
-/* ---------- Banner Section ---------- */
+/* ---------- Banner Section (Bigger & Balanced) ---------- */
 .banner {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 80px 20px;
+  padding: 100px 40px; /* increased height */
   background: #fff8f9;
 }
 
@@ -303,52 +309,65 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1400px; /* widened container */
   width: 100%;
 }
 
 .banner_card {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 40px;
-  background: #fff;
+  align-items: center;
+  gap: 60px;
+  background: #ffffff;
   border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  padding: 60px; /* more padding for premium spacing */
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.banner_card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Larger Image */
 .banner_card .banner-image img {
-  width: 480px;
-  border-radius: 10px;
+  width: 600px; /* increased from 480px */
+  height: 750px;
+  border-radius: 16px;
   object-fit: cover;
 }
 
-/* Product Details */
+/* Product Details — Bigger Text */
 .product {
-  max-width: 400px;
+  max-width: 500px;
 }
 
 .store-name {
-  font-size: 12px;
+  font-size: 14px;
   color: gray;
   letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 10px 0;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 15px 0;
+  line-height: 1.3;
+  color: #222;
 }
 
 .old-price {
   text-decoration: line-through;
   color: gray;
+  font-size: 18px;
 }
 
 .new-price {
-  font-size: 20px;
+  font-size: 26px;
   color: #000;
   font-weight: bold;
 }
@@ -356,31 +375,33 @@ body {
 .sale {
   background-color: #3bb54a;
   color: white;
-  padding: 3px 8px;
-  border-radius: 5px;
-  font-size: 14px;
-  margin-left: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  margin-left: 8px;
 }
 
 .shipping {
-  color: gray;
-  font-size: 14px;
-  margin-top: 5px;
+  color: #777;
+  font-size: 16px;
+  margin-top: 8px;
 }
 
+/* Quantity & Buttons — Bigger Buttons */
 .quantity {
   display: flex;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .quantity div {
   border: 1px solid #ccc;
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   text-align: center;
-  line-height: 30px;
+  line-height: 38px;
   cursor: pointer;
+  font-size: 20px;
   user-select: none;
 }
 
@@ -388,26 +409,44 @@ body {
   width: 50px;
   text-align: center;
   display: inline-block;
+  font-size: 18px;
 }
 
-.add-to-cart,
+.cart-btn {
+  border-radius: 6px;
+  border: 2px solid #e20074;
+  background-color: #fff;
+  color: #e20074;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 14px;
+  width: 100%;
+  margin-top: 20px;
+  transition: 0.3s ease;
+}
+
+.cart-btn:hover {
+  background-color: #e20074;
+  color: white;
+}
+
 .buy-now {
   text-align: center;
   margin-top: 15px;
-  padding: 12px;
-  border: 1px solid #e20074;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.add-to-cart {
-  color: #e20074;
-  background-color: #fff;
-}
-
-.buy-now {
+  padding: 14px;
+  border: 2px solid #e20074;
   background-color: #e20074;
   color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.buy-now:hover {
+  background-color: #b0005a;
 }
 
 /* Responsive Layout */
@@ -415,12 +454,30 @@ body {
   .banner_card {
     flex-direction: column;
     align-items: center;
+    padding: 40px;
   }
 
   .banner_card .banner-image img {
     width: 100%;
+    max-width: 500px;
+  }
+
+  .product {
+    text-align: center;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .new-price {
+    font-size: 22px;
   }
 }
+
+
+
+
 
 
 

@@ -211,6 +211,35 @@
   </div>
   </section>
 
+  <!-- Manga Content -->
+  <section class="book-sale">
+  <h2 class="section-title">Manga Sets</h2>
+
+  <div class="book-grid">
+    {% for book in books %}
+      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+        <div class="book-card">
+          <img src="{{ book.image.url }}" alt="{{ book.title }}">
+          <span class="sale-tag">Sale</span>
+          <h3 class="book-title">{{ book.title }}</h3>
+          {% if book.old_price %}
+            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
+          {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+          {% endif %}
+          <button class="cart-btn">Add to cart</button>
+        </div>
+      </a>
+    {% empty %}
+      <p style="text-align:center;">No books available right now.</p>
+    {% endfor %}
+  </div>
+
+  <div class="view-all">
+    <button class="view-btn" id="btn4">View all</button>
+  </div>
+  </section>
+
 
 
 

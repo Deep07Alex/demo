@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const saleBtn = document.querySelector("#btn1");
   const romanceBtn = document.querySelector("#btn2");
   const tredingbtn = document.querySelector("#btn3");
+  const mangabtn = document.querySelector("#btn4");
 
   if (saleBtn) {
     saleBtn.addEventListener("click", function (e) {
@@ -107,7 +108,16 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href = "/treding/"; 
     });
   }
+
+  if (mangabtn) {
+    mangabtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      window.location.href = "/manga/"; 
+    });
+  }
 });
+
+
 
 
 
