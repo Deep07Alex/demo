@@ -240,7 +240,7 @@
   <h2 class="section-title">Robert Greene Special</h2>
 
   <div class="book-grid">
-    {% for book in manga_books %}
+    {% for book in robert_greene_special_books %}
       <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
         <div class="book-card">
           <img src="{{ book.image.url }}" alt="{{ book.title }}">
@@ -259,9 +259,9 @@
     {% endfor %}
   </div>
 
-  {% comment %} <div class="view-all">
+  <div class="view-all">
     <button class="view-btn" id="btn4">View all</button>
-  </div> {% endcomment %}
+  </div> 
   </section>
 
   <!-- Mythology -->
@@ -269,7 +269,7 @@
   <h2 class="section-title">Mythology</h2>
 
   <div class="book-grid">
-    {% for book in manga_books %}
+    {% for book in mythology_books %}
       <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
         <div class="book-card">
           <img src="{{ book.image.url }}" alt="{{ book.title }}">
@@ -298,7 +298,7 @@
   <h2 class="section-title">Hindi Books</h2>
 
   <div class="book-grid">
-    {% for book in manga_books %}
+    {% for book in hindi_books %}
       <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
         <div class="book-card">
           <img src="{{ book.image.url }}" alt="{{ book.title }}">
@@ -327,7 +327,7 @@
   <h2 class="section-title">Preloved Bestsellers</h2>
 
   <div class="book-grid">
-    {% for book in manga_books %}
+    {% for book in preloved_bestsellers_books %}
       <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
         <div class="book-card">
           <img src="{{ book.image.url }}" alt="{{ book.title }}">
@@ -356,7 +356,7 @@
   <h2 class="section-title">New Arrivals</h2>
 
   <div class="book-grid">
-    {% for book in manga_books %}
+    {% for book in new_arrivals_books %}
       <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
         <div class="book-card">
           <img src="{{ book.image.url }}" alt="{{ book.title }}">
@@ -380,36 +380,6 @@
   </div>
   </section>
 
-   <!-- Self-help/Finance Combos -->
-  <section class="book-sale">
-  <h2 class="section-title">Self-help/Finance Combos</h2>
-
-  <div class="book-grid">
-    {% for book in manga_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn9">View all</button>
-  </div>
-  </section>
-
-  
 
   <!-- Footer -->
   <footer class="footer">

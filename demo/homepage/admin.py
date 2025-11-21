@@ -4,13 +4,13 @@ from .models import Book
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'price', 'old_price', 'on_sale', 'date_added')
-    list_filter = ('category', 'on_sale', 'date_added')  # Add category filter
+    list_filter = ('category', 'on_sale', 'date_added') 
     search_fields = ('title',)
     ordering = ('-date_added',)
 
     fieldsets = (
         ('Book Details', {
-            'fields': ('title', 'slug', 'image', 'category')  # Add category
+            'fields': ('title', 'slug', 'image', 'category') 
         }),
         ('Pricing', {
             'fields': ('price', 'old_price', 'on_sale')

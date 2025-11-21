@@ -3,7 +3,6 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 class Book(models.Model):
-    # Add this category field
     CATEGORY_CHOICES = [
         ('self_help', 'Self-Help'),
         ('romance', 'Romance'),
@@ -14,6 +13,9 @@ class Book(models.Model):
         ('mythology', 'Mythology'),
         ('science', 'Science'),
         ('biography', 'Biography & Autobiography'),
+        ('robert_greene_special', 'Robert Greene Special'),  
+        ('preloved_bestsellers', 'Preloved Bestsellers'),    
+        ('new_arrivals', 'New Arrivals'),                    
     ]
     
     title = models.CharField(max_length=200)
