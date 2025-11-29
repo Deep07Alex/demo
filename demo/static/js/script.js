@@ -162,6 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+// Add to cart button
+
+
 
 
 // Quantity Counter banner

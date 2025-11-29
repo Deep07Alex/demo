@@ -1,32 +1,159 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ book.title }} | Family BookStore</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-  <header>
-    <a href="/" style="text-decoration:none;color:black;">← Back to Home</a>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ book.title }} | Family BookStore</title>
 
-  <main style="padding:2rem;text-align:center;">
-    <h1>{{ book.title }}</h1>
-    <img src="{{ book.image.url }}" alt="{{ book.title }}" style="width:200px;height:auto;">
-    <p><strong>Price:</strong> ₹{{ book.price }}</p>
-    {% if book.old_price %}
-      <p><del>₹{{ book.old_price }}</del></p>
-    {% endif %}
-    {% if book.on_sale %}
-      <p style="color:red;">On Sale!</p>
-    {% endif %}
-    <p><em>Added on:</em> {{ book.date_added|date:"F j, Y" }}</p>
-  </main>
+    <link rel="stylesheet" href="{% static 'css/bookdetails.css' %}" />
+    <script defer src="{% static 'js/bookdetails.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
 
-  <footer style="text-align:center;padding:1rem;">
-    <p>© 2025 Family BookStore</p>
-  </footer>
-</body>
+  <body>
+    <!-- Header -->
+    <header>
+      <nav class="navbar">
+        <!-- Logo -->
+        <div class="nav-logo">
+          <div class="logo"></div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+          <a href="#" class="active" id="homeLink">Home</a>
+          <a href="#">Product Categories</a>
+          <a href="#">Bulk Purchase</a>
+          <a href="#">About Us</a>
+          <a href="#">Return & Replacement</a>
+          <a href="#">Contact Us</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Privacy Policy</a>
+        </div>
+
+        <!-- Icons -->
+        <div class="nav-icons">
+          <i class="fa fa-search"></i>
+          <i class="fa fa-bag-shopping"></i>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container">
+      <!-- Left Side Image -->
+      <div class="image-box">
+        <img
+          src="{{ book.image.url }}"
+          alt="{{ book.title }}"
+          class="book-img"
+        />
+      </div>
+
+      <!-- Right Side Details -->
+      <div class="details">
+        <h1 class="title">{{ book.title }}</h1>
+
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+
+        <div class="price-box">
+          ₹{{ book.price }} {% if book.old_price %}
+          <span class="old-price">₹{{ book.old_price }}</span>
+          {% endif %} {% if book.on_sale %}
+          <span class="sale-badge">Sale</span>
+          {% endif %}
+        </div>
+
+        <!-- Quantity -->
+        <div class="qty-box">
+          <button class="qty-btn" onclick="decreaseQty()">−</button>
+          <span id="qty-display">1</span>
+          <button class="qty-btn" onclick="increaseQty()">+</button>
+        </div>
+
+        <!-- Buttons -->
+        <button class="add-cart">Add to Cart</button>
+        <button class="buy-now">BUY NOW</button>
+
+        <!-- Countdown -->
+        <div class="timer-box">
+          <p><strong>Hurry up!</strong> Sale ends in:</p>
+          <div id="countdown">
+            <span id="hrs">00</span> Hrs <span id="mins">00</span> Mins
+            <span id="secs">00</span> Secs
+          </div>
+        </div>
+
+        <!-- Icons -->
+        <div class="icons-row">
+          <div class="icon-item">✔ Quality Checked</div>
+          <div class="icon-item">🔒 Secure Payments</div>
+          <div class="icon-item">🚚 COD Available</div>
+        </div>
+
+        <p class="date-added">
+          <em>Added on:</em> {{ book.date_added|date:"F j, Y" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <!-- Social Media -->
+        <div class="footer-section">
+          <h3>Follow us on Social Media</h3>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Bulk Purchase</a></li>
+            <li><a href="#">Return & Replacement</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <!-- About -->
+        <div class="footer-section about">
+          <h3>About the Shop</h3>
+          <p>
+            We’re a family-run bookstore offering the best deals on your
+            favorite titles and curated book combos.
+          </p>
+          <img
+            src="../images/logo.png"
+            alt="Family BookStore Logo"
+            class="footer-logo"
+          />
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2025, Family Book Store</p>
+        <div class="payment-icons">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+            alt="Visa"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
+            alt="MasterCard"
+          />
+        </div>
+      </div>
+    </footer>
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
 </html>

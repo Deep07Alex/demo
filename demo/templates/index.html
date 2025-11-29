@@ -1,427 +1,469 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Family BookStore</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Family BookStore</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <nav class="navbar">
+        <!-- Logo -->
+        <div class="nav-logo">
+          <div class="logo"></div>
+        </div>
 
-  <!-- Header -->
-  <header>
-    <nav class="navbar">
-      <!-- Logo -->
-      <div class="nav-logo">
-        <div class="logo"></div>
+        <!-- Navigation Links -->
+        <div class="nav-links">
+          <a href="#" class="active" id="homeLink">Home</a>
+          <a href="#">Product Categories</a>
+          <a href="#">Bulk Purchase</a>
+          <a href="#">About Us</a>
+          <a href="#">Return & Replacement</a>
+          <a href="#">Contact Us</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Privacy Policy</a>
+        </div>
+
+        <!-- Icons -->
+        <div class="nav-icons">
+          <i class="fa fa-search"></i>
+          <i class="fa fa-bag-shopping"></i>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bgimg-section">
+      <div class="overlay">
+        <h1>Welcome to Family BookStore</h1>
+        <p>Discover amazing deals on your favorite reads</p>
       </div>
+    </section>
 
-      <!-- Navigation Links -->
-      <div class="nav-links">
-        <a href="#" class="active" id="homeLink">Home</a>
-        <a href="#">Product Categories</a>
-        <a href="#">Bulk Purchase</a>
-        <a href="#">About Us</a>
-        <a href="#">Return & Replacement</a>
-        <a href="#">Contact Us</a>
-        <a href="#">Terms & Conditions</a>
-        <a href="#">Privacy Policy</a>
+    <!-- Books catagories -->
+    <section class="book-categories">
+      <div class="category">
+        <img src="/demo/static/images/sale.avif" alt="" />
+        <p>Self-help (On Sale)</p>
       </div>
-
-      <!-- Icons -->
-      <div class="nav-icons">
-        <i class="fa fa-search"></i>
-        <i class="fa fa-bag-shopping"></i>
+      <div class="category">
+        <img src="romance.png" alt="Romance" />
+        <p>Romance (On Sale)</p>
       </div>
-    </nav>
-  </header>
+      <div class="category">
+        <img src="business.png" alt="Business and Finance" />
+        <p>Business and Finance</p>
+      </div>
+      <div class="category">
+        <img src="hindi.png" alt="Hindi Books" />
+        <p>Hindi Books</p>
+      </div>
+      <div class="category">
+        <img src="kids.png" alt="Kids Book" />
+        <p>Kids Book</p>
+      </div>
+      <div class="category">
+        <img src="manga.png" alt="Manga" />
+        <p>Manga</p>
+      </div>
+      <div class="category">
+        <img src="mythology.png" alt="Mythology" />
+        <p>Mythology</p>
+      </div>
+      <div class="category">
+        <img src="science.png" alt="Science" />
+        <p>Science</p>
+      </div>
+      <div class="category">
+        <img src="biography.png" alt="Biography and Autobiography" />
+        <p>Biography and Autobiography</p>
+      </div>
+    </section>
 
-  <!-- Hero Section -->
-  <section class="bgimg-section">
-    <div class="overlay">
-      <h1>Welcome to Family BookStore</h1>
-      <p>Discover amazing deals on your favorite reads</p>
-    </div>
-  </section>
-
-  <!-- Books catagories -->
-  <section class="book-categories">
-  <div class="category">
-    <img src="/demo/static/images/sale.avif" alt="">
-    <p>Self-help (On Sale)</p>
-  </div>
-  <div class="category">
-    <img src="romance.png" alt="Romance">
-    <p>Romance (On Sale)</p>
-  </div>
-  <div class="category">
-    <img src="business.png" alt="Business and Finance">
-    <p>Business and Finance</p>
-  </div>
-  <div class="category">
-    <img src="hindi.png" alt="Hindi Books">
-    <p>Hindi Books</p>
-  </div>
-  <div class="category">
-    <img src="kids.png" alt="Kids Book">
-    <p>Kids Book</p>
-  </div>
-  <div class="category">
-    <img src="manga.png" alt="Manga">
-    <p>Manga</p>
-  </div>
-  <div class="category">
-    <img src="mythology.png" alt="Mythology">
-    <p>Mythology</p>
-  </div>
-  <div class="category">
-    <img src="science.png" alt="Science">
-    <p>Science</p>
-  </div>
-  <div class="category">
-    <img src="biography.png" alt="Biography and Autobiography">
-    <p>Biography and Autobiography</p>
-  </div>
-  </section>
-
-  <!-- Sale Content -->
-  <section class="book-sale">
-    <h2 class="section-title">SELF-HELP ON SALE</h2>
-    <div class="book-grid">
-      {% for book in sale_books %}
+    <!-- Sale Content -->
+    <section class="book-sale">
+      <h2 class="section-title">SELF-HELP ON SALE</h2>
+      <div class="book-grid">
+        {% for book in sale_books %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
-            <img src="{{ book.image.url }}" alt="{{ book.title }}">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             {% if book.on_sale %}<span class="sale-tag">Sale</span>{% endif %}
             <h3 class="book-title">{{ book.title }}</h3>
             {% if book.old_price %}
-              <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
             {% else %}
-              <p class="price">Rs. {{ book.price }}</p>
+            <p class="price">Rs. {{ book.price }}</p>
             {% endif %}
             <button class="cart-btn">Add to cart</button>
           </div>
         </a>
-      {% empty %}
-        <p style="text-align:center;">No books available right now.</p>
-      {% endfor %}
-    </div>
-    <div class="view-all">
-      <button class="view-btn" id="btn1">View all</button>
-    </div>
-  </section>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
+      </div>
+      <div class="view-all">
+        <button class="view-btn" id="btn1">View all</button>
+      </div>
+    </section>
 
-  <!-- Romance Content -->
-  <section class="book-sale">
-  <h2 class="section-title">ROMANCE</h2>
+    <!-- Romance Content -->
+    <section class="book-sale">
+      <h2 class="section-title">ROMANCE</h2>
 
-  <div class="book-grid">
-    {% for book in romance_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
+      <div class="book-grid">
+        {% for book in romance_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
             <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn2">View all</button>
-  </div>
-  </section>
-
-  <!-- Treding Content -->
-  <section class="book-sale">
-  <h2 class="section-title">TRADING & FINANCE</h2>
-
-  <div class="book-grid">
-    {% for book in trading_finance_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn3">View all</button>
-  </div>
-  </section>
-
-  <!-- Banner Section -->
-  <section class="banner">
-  <div class="banner_container">
-
-    <div class="banner_card">
-      <!-- Book Combo Image (Left Side) -->
-      <div class="banner-image">
-        <img src="https://99bookstores.com/cdn/shop/files/1_b7fbebdd-738a-4a87-9b5e-72746619c9f8.png?v=1760611903&width=600" alt="Special 99 Box Combo">
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
       </div>
 
-      <!-- Product Info (Right Side) -->
-      <div class="product">
-        <div class="store-name">99BOOKSTORE</div>
-        <div class="title">Special 99 Box (16 Books Combo) 🎁</div>
-        <div>
-          <span class="old-price">Rs. 7,999.00</span>
-          <span class="new-price"> Rs. 1,599.00 </span>
-          <span class="sale">Sale</span>
-        </div>
-        <div class="shipping">Shipping calculated at checkout.</div>
-
-        <div class="quantity">
-          <div id="minus">−</div>
-          <span id="qty">1</span>
-          <div id="plus">+</div>
-        </div>
-
-        <button class="cart-btn">Add to cart</button>
-        <div class="buy-now">BUY NOW →</div>
+      <div class="view-all">
+        <button class="view-btn" id="btn2">View all</button>
       </div>
-    </div>
+    </section>
 
-  </div>
-  </section>
+    <!-- Treding Content -->
+    <section class="book-sale">
+      <h2 class="section-title">TRADING & FINANCE</h2>
 
-  <!-- Manga Content -->
-  <section class="book-sale">
-  <h2 class="section-title">Manga Sets</h2>
-
-  <div class="book-grid">
-    {% for book in manga_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
+      <div class="book-grid">
+        {% for book in trading_finance_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
             <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn4">View all</button>
-  </div>
-  </section>
-
-  <!-- Robert Greene Special -->
-  <section class="book-sale">
-  <h2 class="section-title">Robert Greene Special</h2>
-
-  <div class="book-grid">
-    {% for book in robert_greene_special_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn4">View all</button>
-  </div> 
-  </section>
-
-  <!-- Mythology -->
-  <section class="book-sale">
-  <h2 class="section-title">Mythology</h2>
-
-  <div class="book-grid">
-    {% for book in mythology_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn5">View all</button>
-  </div>
-  </section>
-
-  <!-- Hindi Books -->
-  <section class="book-sale">
-  <h2 class="section-title">Hindi Books</h2>
-
-  <div class="book-grid">
-    {% for book in hindi_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn6">View all</button>
-  </div>
-  </section>
-
-  <!-- Preloved Bestsellers -->
-  <section class="book-sale">
-  <h2 class="section-title">Preloved Bestsellers</h2>
-
-  <div class="book-grid">
-    {% for book in preloved_bestsellers_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn7">View all</button>
-  </div>
-  </section>
-
-  <!-- New Arrivals -->
-  <section class="book-sale">
-  <h2 class="section-title">New Arrivals</h2>
-
-  <div class="book-grid">
-    {% for book in new_arrivals_books %}
-      <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
-        <div class="book-card">
-          <img src="{{ book.image.url }}" alt="{{ book.title }}">
-          <span class="sale-tag">Sale</span>
-          <h3 class="book-title">{{ book.title }}</h3>
-          {% if book.old_price %}
-            <p class="price"><span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}</p>
-          {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-          {% endif %}
-          <button class="cart-btn">Add to cart</button>
-        </div>
-      </a>
-    {% empty %}
-      <p style="text-align:center;">No books available right now.</p>
-    {% endfor %}
-  </div>
-
-  <div class="view-all">
-    <button class="view-btn" id="btn8">View all</button>
-  </div>
-  </section>
-
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-container">
-      <!-- Social Media -->
-      <div class="footer-section">
-        <h3>Follow us on Social Media</h3>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-        </div>
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
       </div>
 
-      <!-- Quick Links -->
-      <div class="footer-section">
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Bulk Purchase</a></li>
-          <li><a href="#">Return & Replacement</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-        </ul>
+      <div class="view-all">
+        <button class="view-btn" id="btn3">View all</button>
+      </div>
+    </section>
+
+    <!-- Banner Section -->
+    <section class="banner">
+      <div class="banner_container">
+        <div class="banner_card">
+          <!-- Book Combo Image (Left Side) -->
+          <div class="banner-image">
+            <img
+              src="https://99bookstores.com/cdn/shop/files/1_b7fbebdd-738a-4a87-9b5e-72746619c9f8.png?v=1760611903&width=600"
+              alt="Special 99 Box Combo"
+            />
+          </div>
+
+          <!-- Product Info (Right Side) -->
+          <div class="product">
+            <div class="store-name">99BOOKSTORE</div>
+            <div class="title">Special 99 Box (16 Books Combo) 🎁</div>
+            <div>
+              <span class="old-price">Rs. 7,999.00</span>
+              <span class="new-price"> Rs. 1,599.00 </span>
+              <span class="sale">Sale</span>
+            </div>
+            <div class="shipping">Shipping calculated at checkout.</div>
+
+            <div class="quantity">
+              <div id="minus">−</div>
+              <span id="qty">1</span>
+              <div id="plus">+</div>
+            </div>
+
+            <button class="cart-btn">Add to cart</button>
+            <div class="buy-now">BUY NOW →</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Manga Content -->
+    <section class="book-sale">
+      <h2 class="section-title">Manga Sets</h2>
+
+      <div class="book-grid">
+        {% for book in manga_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
       </div>
 
-      <!-- About -->
-      <div class="footer-section about">
-        <h3>About the Shop</h3>
-        <p>We’re a family-run bookstore offering the best deals on your favorite titles and curated book combos.</p>
-        <img src="../images/logo.png" alt="Family BookStore Logo" class="footer-logo">
+      <div class="view-all">
+        <button class="view-btn" id="btn4">View all</button>
       </div>
-    </div>
+    </section>
 
-    <div class="footer-bottom">
-      <p>© 2025, Family Book Store</p>
-      <div class="payment-icons">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="MasterCard">
+    <!-- Robert Greene Special -->
+    <section class="book-sale">
+      <h2 class="section-title">Robert Greene Special</h2>
+
+      <div class="book-grid">
+        {% for book in robert_greene_special_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
       </div>
-    </div>
-  </footer>
 
-  <script src="{% static 'js/script.js' %}"></script>
-</body>
+      <div class="view-all">
+        <button class="view-btn" id="btn4">View all</button>
+      </div>
+    </section>
+
+    <!-- Mythology -->
+    <section class="book-sale">
+      <h2 class="section-title">Mythology</h2>
+
+      <div class="book-grid">
+        {% for book in mythology_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
+      </div>
+
+      <div class="view-all">
+        <button class="view-btn" id="btn5">View all</button>
+      </div>
+    </section>
+
+    <!-- Hindi Books -->
+    <section class="book-sale">
+      <h2 class="section-title">Hindi Books</h2>
+
+      <div class="book-grid">
+        {% for book in hindi_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
+      </div>
+
+      <div class="view-all">
+        <button class="view-btn" id="btn6">View all</button>
+      </div>
+    </section>
+
+    <!-- Preloved Bestsellers -->
+    <section class="book-sale">
+      <h2 class="section-title">Preloved Bestsellers</h2>
+
+      <div class="book-grid">
+        {% for book in preloved_bestsellers_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
+      </div>
+
+      <div class="view-all">
+        <button class="view-btn" id="btn7">View all</button>
+      </div>
+    </section>
+
+    <!-- New Arrivals -->
+    <section class="book-sale">
+      <h2 class="section-title">New Arrivals</h2>
+
+      <div class="book-grid">
+        {% for book in new_arrivals_books %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <span class="sale-tag">Sale</span>
+            <h3 class="book-title">{{ book.title }}</h3>
+            {% if book.old_price %}
+            <p class="price">
+              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
+              book.price }}
+            </p>
+            {% else %}
+            <p class="price">Rs. {{ book.price }}</p>
+            {% endif %}
+            <button class="cart-btn">Add to cart</button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
+      </div>
+
+      <div class="view-all">
+        <button class="view-btn" id="btn8">View all</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <!-- Social Media -->
+        <div class="footer-section">
+          <h3>Follow us on Social Media</h3>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Bulk Purchase</a></li>
+            <li><a href="#">Return & Replacement</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <!-- About -->
+        <div class="footer-section about">
+          <h3>About the Shop</h3>
+          <p>
+            We’re a family-run bookstore offering the best deals on your
+            favorite titles and curated book combos.
+          </p>
+          <img
+            src="../images/logo.png"
+            alt="Family BookStore Logo"
+            class="footer-logo"
+          />
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2025, Family Book Store</p>
+        <div class="payment-icons">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+            alt="Visa"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
+            alt="MasterCard"
+          />
+        </div>
+      </div>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
 </html>
