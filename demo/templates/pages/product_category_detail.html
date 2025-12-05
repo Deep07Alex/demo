@@ -12,7 +12,14 @@
     <div class="book-card">
       <img src="{{ item.image.url }}" alt="{{ item.title }}">
       <h3 class="book-title">{{ item.title }}</h3>
+      {% if item.old_price %}
+      <p class="price"><span class="old">Rs. {{ item.old_price }}</span> Rs. {{ item.price }}</p>
+      {% else %}
       <p class="price">Rs. {{ item.price }}</p>
+      {% endif %}
+      {% if item.on_sale %}
+      <span class="sale-tag">Sale</span>
+      {% endif %}
       <button class="cart-btn">Add to cart</button>
     </div>
   </a>

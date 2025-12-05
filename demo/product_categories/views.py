@@ -1,19 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render ,get_object_or_404
 from django.http import Http404
-from .models import product_variety, MarvelComic
+from .models import product_variety, Product
 
 # Map type codes to models and display names
 PRODUCT_CATEGORY_MAP = {
-    'MC': {'name': 'Marvel Comics', 'model': MarvelComic, 'template': 'comic'},
-    'DC': {'name': 'DC Comics', 'model': None, 'template': 'default'},
-    'MG': {'name': 'Manga Club', 'model': None, 'template': 'default'},
-    'NA': {'name': 'New Arrivals', 'model': None, 'template': 'default'},
-    'LAFK': {'name': 'Learning Apps For Kids', 'model': None, 'template': 'default'},
-    'PF': {'name': 'Popular Fictions', 'model': None, 'template': 'default'},
-    'AAL': {'name': 'All About Love', 'model': None, 'template': 'default'},
-    'RF': {'name': 'Romance & Fictions', 'model': None, 'template': 'default'},
-    'KB': {'name': 'Kids Books', 'model': None, 'template': 'default'},
-    'MT': {'name': 'Mythology & Tails', 'model': None, 'template': 'default'},
+    'NEW': {'name': 'NEW ARRIVAL', 'model': Product, 'template': 'default'},
+    'MNG': {'name': 'MANGA & COMICS', 'model': Product, 'template': 'comic'},
+    'MRC': {'name': 'MOST READ COMBOS', 'model': Product, 'template': 'default'},
+    'SFI': {'name': 'SELF IMPROVEMENTS', 'model': Product, 'template': 'default'},
+    'ROS': {'name': 'ROMANCE ON SALE', 'model': Product, 'template': 'default'},
+    'HIN': {'name': 'HINDI BOOKS', 'model': Product, 'template': 'default'},
+    'BSM': {'name': 'BUSINESS & STOCK-MARKET', 'model': Product, 'template': 'default'},
 }
 
 def productcatagory(request):
@@ -21,18 +18,19 @@ def productcatagory(request):
     return render(request, 'pages/productcatagory.html', {'products_category': products})
 
 def product_category_detail(request, category_type):
-    """Generic view for product category details"""
-    config = PRODUCT_CATEGORY_MAP.get(category_type)
-    if not config:
-        raise Http404(f"Product category '{category_type}' not found")
+    """Show products for a specific category"""
+    # Normalize the category type from URL
+    category_type = category_type.upper()
     
-    # Get items if model exists
-    items = []
-    if config['model']:
-        items = config['model'].objects.all().order_by('id')
+    # Get the category object
+    category = get_object_or_404(product_variety, type=category_type)
+    
+    # **CRITICAL FIX**: Filter products by category ID explicitly
+    # This ensures Django uses the foreign key relationship correctly
+    products = Product.objects.filter(category_id=category.id).order_by('title')
     
     return render(request, 'pages/product_category_detail.html', {
-        'category_name': config['name'],
-        'items': items,
+        'category_name': category.get_type_display(),
+        'items': products,  # This will now only contain products for THIS category
         'category_type': category_type,
     })

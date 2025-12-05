@@ -4,6 +4,27 @@
 {% block title %}{{ category_name }} - Family BookStore{% endblock %}
 
 {% block content %}
+<!-- Cart Sidebar (must be here even when extending base.html) -->
+<div class="overlay" id="cartOverlay"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h2>Shopping Cart (<span id="cartCount">0</span>)</h2>
+    <span class="close-btn" id="closeCartBtn">&times;</span>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <p class="empty-cart">Your cart is empty</p>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display: none;">
+    <div class="cart-total">
+      <span>Total:</span>
+      <span id="cartTotal">₹0.00</span>
+    </div>
+    <button class="checkout-btn" onclick="window.location.href='/checkout/'">
+      Proceed to Checkout
+    </button>
+  </div>
+</div>
+
 <section class="book-category-page">
   <h2 class="section-title">{{ category_name }}</h2>
   
@@ -19,7 +40,17 @@
         {% else %}
         <p class="price">Rs. {{ book.price }}</p>
         {% endif %}
-        <button class="cart-btn">Add to cart</button>
+        <!-- FIXED: Added proper class and data attributes -->
+        <button 
+          class="cart-btn add-to-cart-btn" 
+          data-id="{{ book.id }}"
+          data-type="book"
+          data-title="{{ book.title|escapejs }}"
+          data-price="{{ book.price }}"
+          data-image="{{ book.image.url }}"
+        >
+          Add to cart
+        </button>
       </div>
     </a>
     {% empty %}
@@ -27,4 +58,9 @@
     {% endfor %}
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
 {% endblock %}

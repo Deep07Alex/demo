@@ -1,3 +1,110 @@
+// ---------------- Live Search with Dropdown ----------------
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+  const dropdown = document.getElementById("searchDropdown");
+  
+  if (!searchInput || !dropdown) return;
+  
+  let debounceTimer;
+  let currentQuery = "";
+  
+  // Toggle search bar
+  searchBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    searchInput.classList.toggle("active");
+    if (searchInput.classList.contains("active")) {
+      searchInput.focus();
+      dropdown.style.display = "block";
+    } else {
+      dropdown.style.display = "none";
+    }
+  });
+  
+  // Hide dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".search-container")) {
+      dropdown.style.display = "none";
+      searchInput.classList.remove("active");
+    }
+  });
+  
+  // Live search input
+  searchInput.addEventListener("input", function() {
+    clearTimeout(debounceTimer);
+    currentQuery = this.value.trim();
+    
+    if (currentQuery.length < 2) {
+      dropdown.style.display = "none";
+      return;
+    }
+    
+    // Show loading
+    dropdown.innerHTML = '<div class="search-item loading">Searching...</div>';
+    dropdown.style.display = "block";
+    
+    debounceTimer = setTimeout(() => {
+      fetch(`/search/suggestions/?q=${encodeURIComponent(currentQuery)}`)
+        .then(response => response.json())
+        .then(data => {
+          renderDropdownResults(data.results, currentQuery);
+        })
+        .catch(error => {
+          dropdown.style.display = "none";
+          console.error("Search error:", error);
+        });
+    }, 250);
+  });
+  
+  function renderDropdownResults(results, query) {
+    dropdown.innerHTML = "";
+    
+    if (results.length === 0) {
+      dropdown.innerHTML = `
+        <div class="search-item no-results">
+          <i class="fas fa-search" style="font-size: 24px; margin-bottom: 10px; color: #ddd;"></i>
+          <div>No books found for "${query}"</div>
+        </div>
+      `;
+      dropdown.style.display = "block";
+      return;
+    }
+    
+    results.forEach(item => {
+      const resultDiv = document.createElement("div");
+      resultDiv.className = "search-item";
+      
+      // Safe highlight
+      const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      };
+      
+      const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      const safeTitle = escapeHtml(item.title);
+      const highlightedTitle = safeTitle.replace(regex, '<strong>$1</strong>');
+      
+      resultDiv.innerHTML = `
+        <img src="${item.image}" alt="" onerror="this.src='{% static 'images/placeholder.png' %}'; this.onerror=null;">
+        <div class="search-item-info">
+          <div class="search-item-title">${highlightedTitle}</div>
+          <div class="search-item-price">Rs. ${escapeHtml(item.price)}</div>
+          <div class="search-item-type">${item.type}</div>
+        </div>
+      `;
+      
+      resultDiv.addEventListener("click", () => {
+        window.location.href = item.url;
+      });
+      
+      dropdown.appendChild(resultDiv);
+    });
+    
+    dropdown.style.display = "block";
+  }
+});
 // ---------------- Header Navigation ----------------
 document.addEventListener("DOMContentLoaded", function () {
   const links = document.querySelectorAll(".nav-links a");

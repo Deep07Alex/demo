@@ -4,32 +4,28 @@ from .models import Book
 
 def home_page(request):
     context = {
-        'sale_books': Book.objects.filter(category='self_help', on_sale=True).order_by('title'),
-        'romance_books': Book.objects.filter(category='romance').order_by('title'),
-        'trading_finance_books': Book.objects.filter(category='trading_finance').order_by('title'),
-        'manga_books': Book.objects.filter(category='manga').order_by('title'),
-        'robert_greene_special_books': Book.objects.filter(category='robert_greene_special').order_by('title'),
-        'mythology_books': Book.objects.filter(category='mythology').order_by('title'),
-        'hindi_books': Book.objects.filter(category='hindi').order_by('title'),
-        'preloved_bestsellers_books': Book.objects.filter(category='preloved_bestsellers').order_by('title'),
         'new_arrivals_books': Book.objects.filter(category='new_arrivals').order_by('title'),
+        'manga_comics_books': Book.objects.filter(category='manga_comics').order_by('title'),
+        'most_read_combos_books': Book.objects.filter(category='most_read_combos').order_by('title'),
+        'self_improvements_books': Book.objects.filter(category='self_improvements', on_sale=True).order_by('title'),
+        'romance_sale_books': Book.objects.filter(category='romance', on_sale=True).order_by('title'),
+        'hindi_books': Book.objects.filter(category='hindi').order_by('title'),
+        'business_stock_market_books': Book.objects.filter(category='business_stock_market').order_by('title'),
     }
     return render(request, 'index.html', context)
 
 def book_detail(request, slug):
     book = get_object_or_404(Book, slug=slug)
-    return render(request, 'pages/book_detail.html', {'book': book})
+    return render(request, 'book_detail.html', {'book': book})
 
 CATEGORY_SLUG_MAP = {
-    'sale': {'category': 'self_help', 'on_sale': True, 'name': 'Self-Help On Sale'},
-    'romance': {'category': 'romance', 'on_sale': False, 'name': 'Romance'},
-    'trading-finance': {'category': 'trading_finance', 'on_sale': False, 'name': 'Trading & Finance'},
-    'manga': {'category': 'manga', 'on_sale': False, 'name': 'Manga'},
-    'robert-greene-special': {'category': 'robert_greene_special', 'on_sale': False, 'name': 'Robert Greene Special'},
-    'mythology': {'category': 'mythology', 'on_sale': False, 'name': 'Mythology'},
-    'hindi-books': {'category': 'hindi', 'on_sale': False, 'name': 'Hindi Books'},
-    'preloved-bestsellers': {'category': 'preloved_bestsellers', 'on_sale': False, 'name': 'Preloved Bestsellers'},
-    'new-arrivals': {'category': 'new_arrivals', 'on_sale': False, 'name': 'New Arrivals'},
+    'new-arrivals': {'category': 'new_arrivals', 'on_sale': False, 'name': 'NEW ARRIVALS'},
+    'manga-comics': {'category': 'manga_comics', 'on_sale': False, 'name': 'MANGA & COMICS'},
+    'most-read-combos': {'category': 'most_read_combos', 'on_sale': False, 'name': 'MOST READ COMBOS'},
+    'self-improvements': {'category': 'self_improvements', 'on_sale': True, 'name': 'SELF IMPROVEMENTS'},
+    'romance-sale': {'category': 'romance', 'on_sale': True, 'name': 'ROMANCE ON SALE'},
+    'hindi-books': {'category': 'hindi', 'on_sale': False, 'name': 'HINDI BOOKS'},
+    'business-stock-market': {'category': 'business_stock_market', 'on_sale': False, 'name': 'BUSINESS & STOCK-MARKET'},
 }
 
 def category_view(request, category_slug):

@@ -4,18 +4,13 @@ from django.utils.text import slugify
 
 class Book(models.Model):
     CATEGORY_CHOICES = [
-        ('self_help', 'Self-Help'),
-        ('romance', 'Romance'),
-        ('trading_finance', 'Trading & Finance'),
-        ('hindi', 'Hindi Books'),
-        ('kids', 'Kids Books'),
-        ('manga', 'Manga'),
-        ('mythology', 'Mythology'),
-        ('science', 'Science'),
-        ('biography', 'Biography & Autobiography'),
-        ('robert_greene_special', 'Robert Greene Special'),  
-        ('preloved_bestsellers', 'Preloved Bestsellers'),    
-        ('new_arrivals', 'New Arrivals'),                    
+        ('new_arrivals', 'NEW ARRIVALS'),
+        ('manga_comics', 'MANGA & COMICS'),
+        ('most_read_combos', 'MOST READ COMBOS'),
+        ('self_improvements', 'SELF IMPROVEMENTS'),
+        ('romance', 'ROMANCE ON SALE'),
+        ('hindi', 'HINDI BOOKS'),
+        ('business_stock_market', 'BUSINESS & STOCK-MARKET'),
     ]
     
     title = models.CharField(max_length=200)
