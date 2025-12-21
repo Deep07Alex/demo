@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Family BookStore</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Cart Overlay + Sidebar -->
+    <div class="overlay" id="cartOverlay"></div>
+
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="cart-header">
+        <h2>Shopping Cart (<span id="cartCount">0</span>)</h2>
+        <span class="close-btn" id="closeCartBtn">&times;</span>
+      </div>
+
+      <div class="cart-items" id="cartItems">
+        <p class="empty-cart">Your cart is empty</p>
+      </div>
+
+      <div class="cart-footer" id="cartFooter">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cartTotal">₹0.00</span>
+        </div>
+        <button class="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <nav class="navbar">
+        <div class="nav-logo">
+          <h2>Family BookStore</h2>
+        </div>
+
+        <div class="nav-links">
+          <a class="active" href="#">Home</a>
+          <a href="#">Product Categories</a>
+          <a href="#">Bulk Purchase</a>
+          <a href="#">About Us</a>
+          <a href="#">Contact Us</a>
+        </div>
+
+        <div class="nav-icons">
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search books..."
+            />
+            <div id="searchBtn" class="search-btn">
+              <i class="fa fa-search"></i>
+            </div>
+          </div>
+
+          <div id="cartIcon" class="cart-icon-container">
+            <i class="fa fa-shopping-cart"></i>
+            <span id="cartCountBadge" class="cart-count">0</span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-section">
+          <h3>Follow us</h3>
+          <div class="social-icons">
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-instagram"></i>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li>About Us</li>
+            <li>Contact</li>
+            <li>Return Policy</li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <p>Best online bookstore with affordable prices.</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">© 2025 Family BookStore</div>
+    </footer>
+
+    <!-- JS Files -->
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}"></script>
+  </body>
+</html>

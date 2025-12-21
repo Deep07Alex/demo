@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Family BookStore</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <style>
+    /* tiny helpers that Tailwind doesn’t ship */
+    .otp-digit::-webkit-inner-spin-button,
+    .otp-digit::-webkit-outer-spin-button { appearance: none; margin: 0; }
+    .otp-digit { -moz-appearance: textfield; }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-900">
+
+  <div class="min-h-screen flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
+
+      <!-- LEFT: Forms -->
+      <div class="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
+        <h1 class="text-xl sm:text-2xl font-semibold">Checkout</h1>
+        <p class="text-sm sm:text-base text-gray-600">Secure payment & delivery — enter mobile to verify, then fill address.</p>
+
+        <!-- Mobile verification -->
+        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+          <h3 class="text-sm font-medium mb-2">1) Verify mobile number</h3>
+          <div class="flex flex-col xs:flex-row gap-3 items-stretch xs:items-end">
+            <div class="flex-1">
+              <label class="block text-xs text-gray-700 mb-1" for="phone">Mobile number</label>
+              <input type="tel" id="phone" placeholder="+91 98765 43210"
+                     class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-[#e20074] focus:border-transparent"/>
+            </div>
+            <button id="sendOtpBtn"
+                    class="bg-[#e20074] text-white px-4 py-2 rounded-lg font-semibold hover:bg-pink-700">
+              Send OTP
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 mt-2">We’ll send a 6-digit code. This is a demo — OTP is generated client-side.</p>
+        </div>
+
+        <!-- Address (locked until verified) -->
+        <div id="addressSection"
+             class="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200 opacity-50 pointer-events-none" aria-hidden="true">
+          <h3 class="text-sm font-medium mb-2">2) Shipping address</h3>
+
+          <div class="grid gap-3 grid-cols-1 sm:grid-cols-2">
+            <div>
+              <label class="block text-xs text-gray-700 mb-1" for="fullname">Full name</label>
+              <input id="fullname" type="text" placeholder="Your name"
+                     class="w-full px-3 py-2 border rounded-lg text-sm"/>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-700 mb-1" for="email">Email</label>
+              <input id="email" type="email" placeholder="name@example.com"
+                     class="w-full px-3 py-2 border rounded-lg text-sm"/>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="block text-xs text-gray-700 mb-1" for="addr">Address</label>
+            <textarea id="addr" placeholder="House, street, landmark"
+                      class="w-full px-3 py-2 border rounded-lg text-sm resize-y h-20"></textarea>
+          </div>
+
+          <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 mt-3">
+            <div>
+              <label class="block text-xs text-gray-700 mb-1" for="city">City</label>
+              <input id="city" type="text" placeholder="City"
+                     class="w-full px-3 py-2 border rounded-lg text-sm"/>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-700 mb-1" for="state">State / Province</label>
+              <input id="state" type="text" placeholder="State"
+                     class="w-full px-3 py-2 border rounded-lg text-sm"/>
+            </div>
+          </div>
+
+          <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 mt-3">
+            <div>
+              <label class="block text-xs text-gray-700 mb-1" for="pin">PIN / ZIP</label>
+              <input id="pin" type="text" placeholder="PIN code"
+                     class="w-full px-3 py-2 border rounded-lg text-sm"/>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-700 mb-1" for="delivery">Delivery type</label>
+              <select id="delivery" class="w-full px-3 py-2 border rounded-lg text-sm">
+                <option>Standard (3-6 days)</option>
+                <option>Express (1-2 days)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-200">
+          <h3 class="text-sm font-medium mb-2">3) Payment</h3>
+          <p class="text-xs text-gray-500">Choose method</p>
+          <div class="grid grid-cols-3 gap-2 mt-2">
+            <div class="pay-option col-span-3 xs:col-span-1 p-2 border rounded-lg flex items-center justify-center gap-2 cursor-pointer bg-[#e20074] text-white"
+                 data-pay="card" id="methodCard">
+              <i class="fa fa-credit-card"></i> <span class="hidden xs:inline">Card</span>
+            </div>
+            <div class="pay-option col-span-3 xs:col-span-1 p-2 border rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+                 data-pay="upi" id="methodUpi">
+              <i class="fa fa-qrcode"></i> <span class="hidden xs:inline">UPI</span>
+            </div>
+            <div class="pay-option col-span-3 xs:col-span-1 p-2 border rounded-lg flex items-center justify-center gap-2 cursor-pointer"
+                 data-pay="netbank" id="methodNet">
+              <i class="fa fa-university"></i> <span class="hidden xs:inline">Netbanking</span>
+            </div>
+          </div>
+
+          <!-- Card form -->
+          <div id="cardForm" class="mt-3 space-y-3">
+            <input id="cardName" type="text" placeholder="Name on card"
+                   class="w-full px-3 py-2 border rounded-lg text-sm"/>
+            <div class="grid gap-3 grid-cols-1 xs:grid-cols-3">
+              <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19"
+                     class="px-3 py-2 border rounded-lg text-sm"/>
+              <input id="cardExp" type="text" placeholder="MM/YY" maxlength="5"
+                     class="px-3 py-2 border rounded-lg text-sm"/>
+              <input id="cardCvc" type="text" placeholder="CVC" maxlength="4"
+                     class="px-3 py-2 border rounded-lg text-sm"/>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="saveCard"/>
+              <label for="saveCard" class="text-sm">Save card for faster checkout</label>
+            </div>
+          </div>
+
+          <!-- UPI form -->
+          <div id="upiForm" class="mt-3 space-y-2 hidden">
+            <input id="upiId" type="text" placeholder="yourid@bank"
+                   class="w-full px-3 py-2 border rounded-lg text-sm"/>
+            <p class="text-xs text-gray-500">In this demo, entering any UPI id will simulate payment.</p>
+          </div>
+
+          <!-- Netbanking -->
+          <div id="netForm" class="mt-3 hidden">
+            <select id="bankSelect" class="w-full px-3 py-2 border rounded-lg text-sm">
+              <option>HDFC Bank</option>
+              <option>State Bank of India</option>
+              <option>ICICI Bank</option>
+              <option>Axis Bank</option>
+            </select>
+          </div>
+
+          <div class="flex justify-between items-center mt-4">
+            <p class="text-xs text-gray-500">Order total</p>
+            <p class="font-semibold text-lg">₹ 1,199</p>
+          </div>
+
+          <div class="flex flex-col xs:flex-row gap-2 mt-3 items-stretch xs:items-center">
+            <button id="payBtn"
+                    class="bg-[#e20074] text-white px-4 py-2 rounded-lg font-semibold hover:bg-pink-700">
+              Pay ₹1,199
+            </button>
+            <button id="saveAndContinue"
+                    class="border border-[#e20074] text-[#e20074] px-4 py-2 rounded-lg font-semibold hover:bg-[#ffe0f0]">
+              Save & Continue
+            </button>
+            <div class="ml-auto" id="statusPlaceholder"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Summary -->
+      <aside class="bg-gradient-to-b from-white to-gray-50 p-4 sm:p-6 border-t lg:border-t-0 lg:border-l border-gray-200">
+        <div class="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-2">
+          <div class="inline-flex items-center gap-2 bg-[#ffe0f0] text-[#e20074] px-2 py-1 rounded-full border border-[#e20074] font-semibold">
+            <i class="fa fa-lock"></i> Secure checkout
+          </div>
+          <div class="text-xs text-gray-500">Estimated delivery: <strong>Dec 15 - Dec 18</strong></div>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-16 h-16 rounded-lg bg-gray-200 flex items-center justify-center font-bold">FB</div>
+            <div class="flex-1">
+              <div class="font-semibold text-sm sm:text-base">The Little Book of JavaScript</div>
+              <div class="text-xs text-gray-500">Qty 1 • Paperback</div>
+            </div>
+            <div class="text-right">
+              <div class="font-semibold text-sm sm:text-base">₹ 899</div>
+              <div class="text-xs text-gray-500">incl. taxes</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="w-16 h-16 rounded-lg bg-gray-200 flex items-center justify-center font-bold">DS</div>
+            <div class="flex-1">
+              <div class="font-semibold text-sm sm:text-base">Data Structures — Pocket Guide</div>
+              <div class="text-xs text-gray-500">Qty 1 • Paperback</div>
+            </div>
+            <div class="text-right">
+              <div class="font-semibold text-sm sm:text-base">₹ 300</div>
+              <div class="text-xs text-gray-500">incl. taxes</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-200 mt-4"></div>
+        <div class="flex justify-between text-gray-500 mt-2 text-sm sm:text-base"><div>Subtotal</div><div>₹ 1,199</div></div>
+        <div class="flex justify-between text-gray-500 text-sm sm:text-base"><div>Shipping</div><div>₹ 49</div></div>
+        <div class="border-t border-gray-200 my-2"></div>
+        <div class="flex justify-between font-semibold text-lg sm:text-xl"><div>Total</div><div>₹ 1,248</div></div>
+
+        <p class="text-xs text-gray-500 mt-3">Need help? <a href="#" class="underline">Contact support</a></p>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- OTP Modal -->
+  <div id="otpModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-4 sm:p-6 w-11/12 max-w-md shadow-lg">
+      <div class="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-2">
+        <div>
+          <h3 class="text-sm font-medium">Verify your mobile</h3>
+          <p class="text-xs text-gray-500 mt-1">Enter the 6-digit code we sent to <span id="maskedPhone"></span></p>
+        </div>
+        <button id="closeOtp"
+                class="border border-[#e20074] text-[#e20074] px-3 py-1 rounded hover:bg-[#ffe0f0] text-sm">
+          Close
+        </button>
+      </div>
+
+      <div class="flex justify-center gap-1 sm:gap-2 mt-4">
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-digit w-8 h-10 sm:w-10 sm:h-12 text-center border rounded-lg"/>
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-digit w-8 h-10 sm:w-10 sm:h-12 text-center border rounded-lg"/>
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-digit w-8 h-10 sm:w-10 sm:h-12 text-center border rounded-lg"/>
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-digit w-8 h-10 sm:w-10 sm:h-12 text-center border rounded-lg"/>
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-digit w-8 h-10 sm:w-10 sm:h-12 text-center border rounded-lg"/>
+        <input type="text" maxlength="1" inputmode="numeric" class="otp-digit w-8 h-10 sm:w-10 sm:h-12 text-center border rounded-lg"/>
+      </div>
+
+      <div class="flex flex-col xs:flex-row xs:justify-center xs:items-center gap-2 mt-3">
+        <div id="otpTimer" class="text-xs text-gray-500">00:30</div>
+        <button id="resendOtp"
+                class="border border-[#e20074] text-[#e20074] px-2 py-1 rounded hover:bg-[#ffe0f0] text-xs">
+          Resend
+        </button>
+      </div>
+
+      <div class="flex justify-center mt-3">
+        <button id="verifyOtpBtn"
+                class="bg-[#e20074] text-white px-4 py-2 rounded-lg font-semibold hover:bg-pink-700">
+          Verify
+        </button>
+      </div>
+
+      <div id="otpHint" class="text-xs text-gray-500 text-center mt-2"></div>
+    </div>
+  </div>
+
+  <!-- ======  JS (unchanged logic)  ====== -->
+  <script>
+    /* ---------- helpers ---------- */
+    const $ = q => document.querySelector(q);
+    const $$ = q => document.querySelectorAll(q);
+
+    /* ---------- dom refs ---------- */
+    const sendOtpBtn   = $('#sendOtpBtn');
+    const phoneInput   = $('#phone');
+    const otpModal     = $('#otpModal');
+    const maskedPhone  = $('#maskedPhone');
+    const closeOtpBtn  = $('#closeOtp');
+    const resendOtpBtn = $('#resendOtp');
+    const verifyOtpBtn = $('#verifyOtpBtn');
+    const otpDigits    = $$('.otp-digit');
+    const otpHint      = $('#otpHint');
+    const otpTimer     = $('#otpTimer');
+    const addressSec   = $('#addressSection');
+
+    /* ---------- state ---------- */
+    let generatedOtp = '';
+    let timerInterval  = null;
+
+    /* ---------- utility ---------- */
+    const formatPhone = p =>
+      p.length >= 10 ? `${p.slice(0,3)}****${p.slice(-3)}` : p;
+
+    const startTimer = () => {
+      let s = 30;
+      clearInterval(timerInterval);
+      otpTimer.textContent = '00:30';
+      timerInterval = setInterval(() => {
+        s--;
+        otpTimer.textContent = `00:${s.toString().padStart(2,'0')}`;
+        if (s === 0) clearInterval(timerInterval);
+      }, 1000);
+    };
+
+    /* ---------- send otp ---------- */
+    sendOtpBtn.addEventListener('click', () => {
+      const val = phoneInput.value.trim();
+      if (val.length < 10) return alert('Enter a valid 10-digit number');
+      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      maskedPhone.textContent = formatPhone(val);
+      otpModal.classList.remove('hidden');
+      otpHint.textContent = `Demo OTP: ${generatedOtp}`;
+      startTimer();
+      otpDigits[0].focus();
+    });
+
+    closeOtpBtn.addEventListener('click', () => otpModal.classList.add('hidden'));
+
+    /* ---------- otp digit auto-tab ---------- */
+    otpDigits.forEach((inp, idx) => {
+      inp.addEventListener('input', e => {
+        if (e.target.value && idx < otpDigits.length - 1) otpDigits[idx + 1].focus();
+      });
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !e.target.value && idx > 0) otpDigits[idx - 1].focus();
+      });
+    });
+
+    /* ---------- verify otp ---------- */
+    verifyOtpBtn.addEventListener('click', () => {
+      const entered = Array.from(otpDigits).map(d => d.value).join('');
+      if (entered === generatedOtp) {
+        clearInterval(timerInterval);
+        otpModal.classList.add('hidden');
+        addressSec.classList.remove('opacity-50', 'pointer-events-none');
+        addressSec.setAttribute('aria-hidden', 'false');
+      } else {
+        otpHint.textContent = 'Incorrect OTP, try again';
+      }
+    });
+
+    resendOtpBtn.addEventListener('click', () => {
+      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      otpHint.textContent = `Demo OTP: ${generatedOtp}`;
+      otpDigits.forEach(d => d.value = '');
+      otpDigits[0].focus();
+      startTimer();
+    });
+
+    /* ---------- payment method switch ---------- */
+    $$('.pay-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.pay-option').forEach(b => b.classList.remove('bg-[#e20074]', 'text-white'));
+        btn.classList.add('bg-[#e20074]', 'text-white');
+        const method = btn.dataset.pay;
+        $('#cardForm').classList.toggle('hidden', method !== 'card');
+        $('#upiForm').classList.toggle('hidden', method !== 'upi');
+        $('#netForm').classList.toggle('hidden', method !== 'netbank');
+      });
+    });
+
+    /* ---------- card number spacing ---------- */
+    $('#cardNumber').addEventListener('input', e => {
+      e.target.value = e.target.value.replace(/\s+/g, '')
+                                     .replace(/(.{4})/g, '$1 ')
+                                     .trim();
+    });
+
+    /* ---------- expiry format ---------- */
+    $('#cardExp').addEventListener('input', e => {
+      const val = e.target.value.replace(/\D/g, '');
+      if (val.length >= 2) e.target.value = `${val.slice(0,2)}/${val.slice(2,4)}`;
+      else e.target.value = val;
+    });
+  </script>
+</body>
+</html>

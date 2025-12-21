@@ -1,40 +1,34 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Collections</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css   "
-    />
-    <link rel="stylesheet" href="{% static 'css/productcatagory.css' %}" />
-  </head>
-  <body>
-    <!-- Cart Sidebar -->
-    <div class="overlay" id="cartOverlay"></div>
-    <div class="cart-sidebar" id="cartSidebar">
-      <div class="cart-header">
-        <h2>Shopping Cart (<span id="cartCount">0</span>)</h2>
-        <span class="close-btn" id="closeCartBtn">&times;</span>
-      </div>
-      <div class="cart-items" id="cartItems">
-        <p class="empty-cart">Your cart is empty</p>
-      </div>
-      <div class="cart-footer" id="cartFooter" style="display: none">
-        <div class="cart-total">
-          <span>Total:</span>
-          <span id="cartTotal">₹0.00</span>
-        </div>
-        <button
-          class="checkout-btn"
-          onclick="window.location.href='/checkout/'"
-        >
-          Proceed to Checkout
-        </button>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collections</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link rel="stylesheet" href="{% static 'css/productcatagory.css' %}">
+</head>
+<body>
+  <!-- Cart Sidebar -->
+  <div class="overlay" id="cartOverlay"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h2>Shopping Cart (<span id="cartCount">0</span>)</h2>
+      <span class="close-btn" id="closeCartBtn">&times;</span>
     </div>
+    <div class="cart-items" id="cartItems">
+      <p class="empty-cart">Your cart is empty</p>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display: none;">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cartTotal">₹0.00</span>
+      </div>
+      <button class="checkout-btn" onclick="window.location.href='/checkout/'">
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
 
     <!-- Header Navbar -->
     <header>
@@ -85,50 +79,40 @@
       {% endfor %}
     </section>
 
-    <!-- Footer Section -->
-    <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-section">
-          <h3>Follow us on our Social Media</h3>
-          <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-          </div>
-        </div>
-        <div class="footer-section">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="/aboutus/">About Us</a></li>
-            <li><a href="/contactinformation/">Contact Us</a></li>
-            <li><a href="#">Bulk Purchase</a></li>
-            <li><a href="#">Return & Replacement</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-          </ul>
-        </div>
-        <div class="footer-section about">
-          <h3>About the shop</h3>
-          <p>Sample description about the bookstore.</p>
-          <img
-            src="{% static 'images/logo.png' %}"
-            alt="Shop Logo"
-            class="footer-logo"
-          />
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Follow us on our Social Media</h3>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>© 2025, Family Book Store</p>
-        <div class="payment-icons">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png   "
-            alt="Visa"
-          />
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png   "
-            alt="MasterCard"
-          />
-        </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/aboutus/">About Us</a></li>
+          <li><a href="/contactinformation/">Contact Us</a></li>
+          <li><a href="#">Bulk Purchase</a></li>
+          <li><a href="#">Return & Replacement</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
       </div>
-    </footer>
+      <div class="footer-section about">
+        <h3>About the shop</h3>
+        <p>Sample description about the bookstore.</p>
+        <img src="{% static 'images/logo.png' %}" alt="Shop Logo" class="footer-logo">
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025, Family Book Store</p>
+      <div class="payment-icons">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="MasterCard">
+      </div>
+    </div>
+  </footer>
 
     <script src="{% static 'js/script.js' %}"></script>
     <script src="{% static 'js/cart.js' %}"></script>

@@ -197,6 +197,3 @@ def Aboutus(request):
 
 def contact_information(request):
     return render(request, 'pages/contactinformation.html')
-
-def bulk_purchase(request):
-    return render(request, 'pages/bulk.html')
