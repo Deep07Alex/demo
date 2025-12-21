@@ -1,3 +1,27 @@
+// Client-side redirect for empty cart on checkout page
+(function checkoutCartCheck() {
+  // Only run on checkout page
+  if (window.location.pathname !== '/checkout/') return;
+  
+  // Check cart status immediately
+  fetch('/cart/items/')
+    .then(response => {
+      if (!response.ok) throw new Error('Network error');
+      return response.json();
+    })
+    .then(data => {
+      if (!data.cart_count || data.cart_count === 0) {
+        // Cart is empty, redirect to home
+        window.location.href = '/';
+      }
+    })
+    .catch(error => {
+      console.error('Cart check failed:', error);
+      // On error, also redirect to be safe
+      window.location.href = '/';
+    });
+})();
+
 // ---------------- Live Search with Dropdown ----------------
 document.addEventListener("DOMContentLoaded", function () {
   const searchInput = document.getElementById("searchInput");
@@ -89,9 +113,9 @@ document.addEventListener("DOMContentLoaded", function () {
       resultDiv.innerHTML = `
         <img src="${item.image}" alt="" onerror="this.src='{% static 'images/placeholder.png' %}'; this.onerror=null;">
         <div class="search-item-info">
-          <div class="search-item-title">${highlightedTitle}</div>
-          <div class="search-item-price">Rs. ${escapeHtml(item.price)}</div>
-          <div class="search-item-type">${item.type}</div>
+          <div class="cart-item-title">${highlightedTitle}</div>
+          <div class="cart-item-price">Rs. ${escapeHtml(item.price)}</div>
+          <div class="cart-item-type">${item.type}</div>
         </div>
       `;
       
@@ -120,17 +144,33 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         window.location.href = "/productcatagory/";
       });
+    } else if (text === "Bulk Purchase") {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "/bulkpurchase/";
+      });
     } else if (text === "About Us") {
       link.addEventListener("click", function (e) {
         e.preventDefault();
         window.location.href = "/aboutus/";
+      });
+    } else if (text === "Return & Replacement") {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "/return/";
       });
     } else if (text === "Contact Us") {
       link.addEventListener("click", function (e) {
         e.preventDefault();
         window.location.href = "/contactinformation/";
       });
-    }
+      
+    } else if (text === "Privacy Policy") {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "/privacy-policy/";
+      });
+    } 
   });
 });
 

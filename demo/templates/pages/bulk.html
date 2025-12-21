@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bulk Purchase - Family BookStore</title>
+  <link rel="stylesheet" href="{% static 'css/bulk.css' %}" />
+</head>
+<body>
+  <!-- Cart Sidebar -->
+  <div class="overlay" id="cartOverlay"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <!-- ... same cart sidebar as other pages ... -->
+  </div>
+
+  <div class="container">
+    <h1>Bulk Purchase</h1>
+    <form class="bulk-form">
+      <div class="row">
+        <input type="text" placeholder="Name" required>
+        <input type="email" placeholder="Email *" required>
+      </div>
+      <input type="text" class="full" placeholder="Phone number" required>
+      <textarea class="full" placeholder="Comment (book titles, quantities, etc.)" required></textarea>
+      <button type="submit">Send Inquiry</button>
+    </form>
+  </div>
+
+  <script src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'js/cart.js' %}"></script>
+</body>
+</html>

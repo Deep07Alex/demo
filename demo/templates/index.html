@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css   "
     />
   </head>
   <body>
@@ -143,18 +143,16 @@
     <section class="book-sale">
       <h2 class="section-title">NEW ARRIVALS</h2>
       <div class="book-grid">
-        {% for book in new_arrivals_books|slice:":10"%}
+        {% for book in new_arrivals_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price|floatformat:2 }}
             </p>
-            {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
             <button
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
@@ -182,18 +180,16 @@
     <section class="book-sale">
       <h2 class="section-title">MANGA & COMICS</h2>
       <div class="book-grid">
-        {% for book in manga_comics_books|slice:":10"%}
+        {% for book in manga_comics_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price|floatformat:2 }}
             </p>
-            {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
             <button
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
@@ -221,18 +217,16 @@
     <section class="book-sale">
       <h2 class="section-title">MOST READ COMBOS</h2>
       <div class="book-grid">
-        {% for book in most_read_combos_books|slice:":10"%}
+        {% for book in most_read_combos_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price|floatformat:2 }}
             </p>
-            {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
             <button
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
@@ -260,19 +254,17 @@
     <section class="book-sale">
       <h2 class="section-title">SELF IMPROVEMENTS</h2>
       <div class="book-grid">
-        {% for book in self_improvements_books|slice:":10"%}
+        {% for book in self_improvements_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <span class="sale-tag">Sale</span>
             <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price|floatformat:2 }}
             </p>
-            {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
             <button
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
@@ -300,19 +292,17 @@
     <section class="book-sale">
       <h2 class="section-title">ROMANCE ON SALE</h2>
       <div class="book-grid">
-        {% for book in romance_sale_books|slice:":10"%}
+        {% for book in romance_sale_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <span class="sale-tag">Sale</span>
             <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price|floatformat:2 }}
             </p>
-            {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
             <button
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
@@ -340,18 +330,16 @@
     <section class="book-sale">
       <h2 class="section-title">HINDI BOOKS</h2>
       <div class="book-grid">
-        {% for book in hindi_books|slice:":10"%}
+        {% for book in hindi_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price|floatformat:2 }}
             </p>
-            {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
             <button
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
@@ -379,18 +367,16 @@
     <section class="book-sale">
       <h2 class="section-title">BUSINESS & STOCK-MARKET</h2>
       <div class="book-grid">
-        {% for book in business_stock_market_books|slice:":10"%}
+        {% for book in business_stock_market_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
-            {% if book.old_price %}
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{ book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price|floatformat:2 }}
             </p>
-            {% else %}
-            <p class="price">Rs. {{ book.price }}</p>
-            {% endif %}
             <button
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
@@ -417,7 +403,6 @@
         </button>
       </div>
     </section>
-
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-container">
@@ -455,11 +440,11 @@
         <p>© 2025, Family Book Store</p>
         <div class="payment-icons">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png "
+            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png    "
             alt="Visa"
           />
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png "
+            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png    "
             alt="MasterCard"
           />
         </div>

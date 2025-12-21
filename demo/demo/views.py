@@ -160,6 +160,34 @@ def search(request):
         'query': query,
         'results': results
     })
+    
+def checkout(request):
+
+    cart = get_cart(request)    
+    
+    # Convert cart dict values to list for template iteration
+    cart_items = list(cart.values())
+    
+    # Calculate totals
+    subtotal = sum(float(item['price']) * item['quantity'] for item in cart_items)
+    shipping = 49.00  # Flat rate shipping
+    total = subtotal + shipping
+    
+    # Add initials for placeholder images if image is missing
+    for item in cart_items:
+        if not item.get('image'):
+            # Create initials from first letters of first two words
+            words = item['title'].split()
+            item['initials'] = ''.join([word[0].upper() for word in words[:2]])
+    
+    context = {
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+        'shipping': shipping,
+        'total': total,
+    }
+    
+    return render(request, 'pages/payment.html', context)
 
 def home_page(request):
     return render(request, 'index.html')
@@ -169,3 +197,6 @@ def Aboutus(request):
 
 def contact_information(request):
     return render(request, 'pages/contactinformation.html')
+
+def bulk_purchase(request):
+    return render(request, 'pages/bulk.html')

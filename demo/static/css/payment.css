@@ -1,0 +1,9 @@
+/* tiny helpers that Tailwind doesn't ship */
+.otp-digit::-webkit-inner-spin-button,
+.otp-digit::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.otp-digit {
+  -moz-appearance: textfield;
+}

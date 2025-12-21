@@ -25,7 +25,6 @@ def product_category_detail(request, category_type):
     # Get the category object
     category = get_object_or_404(product_variety, type=category_type)
     
-    # **CRITICAL FIX**: Filter products by category ID explicitly
     # This ensures Django uses the foreign key relationship correctly
     products = Product.objects.filter(category_id=category.id).order_by('title')
     
