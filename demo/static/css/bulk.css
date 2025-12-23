@@ -5,10 +5,39 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: #fff;
-  padding: 40px;
+/* ---------- STICKY HEADER ---------- */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;          /* stay above everything */
+  background: #fff;       /* same as body so it’s not transparent */
+  border-bottom: 1px solid #e5e5e5;
 }
+
+/* ---------- FIXED FOOTER ---------- */
+footer.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #1e222b;       /* your footer colour */
+}
+
+/* ---------- SAFE-AREA FOR CONTENT ---------- */
+body {
+    padding-top:    env(safe-area-inset-top,    65px);   /* header height */
+    padding-bottom: env(safe-area-inset-bottom, 200px);  /* footer height */
+}
+
+/* ---------- MINOR TWEAKS ---------- */
+.container {              /* keeps the form from touching viewport edges */
+  padding: 0 20px;
+}
+
+
 
 .container {
   max-width: 900px;
