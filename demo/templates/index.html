@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css   "
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css    "
     />
   </head>
   <body>
@@ -153,8 +153,10 @@
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
-              book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %}
+              Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -172,6 +174,7 @@
         <p style="text-align: center">No books available right now.</p>
         {% endfor %}
       </div>
+      <div class="pagination-dots"></div>
       <div class="view-all">
         <button class="view-btn" id="btn1" data-category="new-arrivals">
           View all
@@ -189,8 +192,10 @@
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
-              book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %}
+              Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -225,8 +230,10 @@
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
-              book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %}
+              Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -262,8 +269,10 @@
             <span class="sale-tag">Sale</span>
             <h3 class="book-title">{{ book.title }}</h3>
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
-              book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %}
+              Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -299,8 +308,10 @@
             <span class="sale-tag">Sale</span>
             <h3 class="book-title">{{ book.title }}</h3>
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
-              book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %}
+              Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -335,8 +346,10 @@
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
-              book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %}
+              Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -371,8 +384,10 @@
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
             <h3 class="book-title">{{ book.title }}</h3>
             <p class="price">
-              <span class="old">Rs. {{ book.old_price }}</span> Rs. {{
-              book.price }}
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %}
+              Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -400,6 +415,7 @@
         </button>
       </div>
     </section>
+    
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-container">
@@ -437,11 +453,11 @@
         <p>© 2025, Family Book Store</p>
         <div class="payment-icons">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png    "
+            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png     "
             alt="Visa"
           />
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png    "
+            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png     "
             alt="MasterCard"
           />
         </div>

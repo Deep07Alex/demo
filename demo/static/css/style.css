@@ -1367,15 +1367,118 @@ body {
 .search-btn {
   width: 40px;
   height: 40px;
-  right: 6px;               /* keep it centred */
+  right: 6px;               
 }
 
-/* 3. White icon on pink button (already done, just emphasise) */
 .search-btn {
   background: #e20074;
 }
 .search-btn i { color: #fff; }
 
-/* ENDddddddddddddddddddddddddddddddddddd */
+@media (max-width: 768px) {
+  /* Horizontal scroll container - REDUCED LEFT PADDING */
+  .book-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    padding: 0 10px 35px 2px !important; /* LEFT padding: 2px (was 10px) */
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    width: 100% !important;
+  }
 
+  .book-grid::-webkit-scrollbar {
+    display: none;
+  }
 
+  .book-card {
+    min-width: 37vw !important;
+    max-width: 37vw !important;
+    min-height: 270px !important; /* Slightly smaller */
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+    padding: 8px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
+  }
+
+  /* Smaller images */
+  .book-card img {
+    height: 130px !important;
+    object-fit: cover;
+    border-radius: 4px !important;
+  }
+
+  /* Compact text */
+  .book-card .book-title {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    margin: 4px 0 !important;
+    height: 22px !important;
+  }
+
+  .book-card .price {
+    font-size: 11px !important;
+    margin: 3px 0 !important;
+  }
+
+  .book-card .price .old {
+    font-size: 9px !important;
+  }
+
+  /* Compact button */
+  .book-card .cart-btn {
+    font-size: 10px !important;
+    padding: 6px !important;
+    border-radius: 3px !important;
+  }
+
+  /* Sale tag */
+  .book-card .sale-tag {
+    font-size: 8px !important;
+    padding: 2px 5px !important;
+    top: 6px !important;
+    left: 6px !important;
+  }
+
+  .section-title {
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+    padding-left: 8px !important;
+  }
+
+  /* PAGINATION DOTS */
+  .pagination-dots {
+    display: flex !important;
+    justify-content: center;
+    gap: 6px;
+    margin-top: -20px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: #e20074;
+    width: 18px;
+    border-radius: 4px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+  .book-card {
+    min-width: 35vw !important;
+    min-height: 250px !important;
+  }
+}

@@ -6,6 +6,8 @@ from homepage.models import Book
 from product_categories.models import Product
 from django.views.decorators.http import require_POST
 import json
+from django.shortcuts import redirect, get_object_or_404
+from homepage.models import Book
 
 def search_suggestions(request):
     """Return JSON search results for live autocomplete - no duplicates"""
@@ -54,6 +56,26 @@ def search_suggestions(request):
     
     return JsonResponse({'results': results})
 
+def buy_now(request, book_id):
+    """Add a single book to cart and redirect to checkout"""
+    book = get_object_or_404(Book, id=book_id)
+    
+    # Clear existing cart and add only this book
+    cart = {}
+    key = f"book_{book.id}"
+    cart[key] = {
+        'id': book.id,
+        'type': 'book',
+        'title': book.title,
+        'price': str(book.price),
+        'image': book.image.url if book.image else '',
+        'quantity': 1
+    }
+    request.session['cart'] = cart
+    request.session.modified = True
+    
+    return redirect('checkout')
+
 # Cart helper functions
 def get_cart(request):
     return request.session.get('cart', {})
@@ -61,6 +83,13 @@ def get_cart(request):
 def save_cart(request, cart):
     request.session['cart'] = cart
     request.session.modified = True
+
+@require_POST
+def clear_cart(request):
+    """Clear all items from cart"""
+    request.session['cart'] = {}
+    request.session.modified = True
+    return JsonResponse({'success': True})
 
 @require_POST
 def add_to_cart(request):
@@ -98,8 +127,8 @@ def get_cart_items(request):
     return JsonResponse({
         'cart_count': sum(item['quantity'] for item in cart.values()),
         'items': items,
-        'total': sum(item['price'] * item['quantity'] for item in cart.values())
-    })
+        'total': sum(float(item['price']) * item['quantity'] for item in cart.values())  
+    })  
 
 @require_POST
 def remove_from_cart(request):

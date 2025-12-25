@@ -320,3 +320,52 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// ============================================
+// Mobile Pagination Dots for Horizontal Scroll
+// ============================================
+document.addEventListener("DOMContentLoaded", function () {
+  // Only run on mobile
+  if (window.innerWidth > 768) return;
+
+  const bookSections = document.querySelectorAll('.book-sale');
+  
+  bookSections.forEach(section => {
+    const grid = section.querySelector('.book-grid');
+    const dotsContainer = section.querySelector('.pagination-dots');
+    if (!grid || !dotsContainer) return;
+
+    const cards = grid.querySelectorAll('.book-card');
+    const cardCount = cards.length;
+    
+    // Generate dots
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < cardCount; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (i === 0) dot.classList.add('active');
+      
+      // Click to scroll
+      dot.addEventListener('click', () => {
+        cards[i].scrollIntoView({ 
+          behavior: 'smooth', 
+          inline: 'start',
+          block: 'nearest'
+        });
+      });
+      
+      dotsContainer.appendChild(dot);
+    }
+
+    // Update dots on scroll
+    grid.addEventListener('scroll', () => {
+      const scrollLeft = grid.scrollLeft;
+      const cardWidth = cards[0].offsetWidth + 12; // includes gap
+      const activeIndex = Math.round(scrollLeft / cardWidth);
+      
+      dotsContainer.querySelectorAll('.dot').forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === activeIndex);
+      });
+    });
+  });
+});
