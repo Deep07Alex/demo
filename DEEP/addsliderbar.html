@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ad Slider</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ===== AD BAR ===== */
+.ad-bar {
+  width: 100%;
+  background: #111;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+  font-family: Arial, sans-serif;
+}
+
+.ad-slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.ad {
+  min-width: 100%;
+  text-align: center;
+  padding: 10px 40px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Arrows */
+.ad-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  user-select: none;
+}
+
+.ad-arrow.left { left: 10px; }
+.ad-arrow.right { right: 10px; }
+
+.ad-arrow:hover {
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== ADVERTISEMENT SLIDER ===== -->
+<div class="ad-bar">
+  
+  <div class="ad-slides" id="adSlides">
+    <div class="ad">📚 Buy 10 Books & get Flat 10% OFF</div>
+    <div class="ad">🚚 Free Delivery on Orders Above ₹499</div>
+    <div class="ad">🎉 New Year Sale – Extra Discounts!</div>
+  </div>
+
+  <!-- Arrows -->
+  <div class="ad-arrow left" onclick="prevAd()">❮</div>
+  <div class="ad-arrow right" onclick="nextAd()">❯</div>
+</div>
+
+<script>
+let adIndex = 0;
+const adSlides = document.getElementById("adSlides");
+const totalAds = adSlides.children.length;
+
+function updateAd() {
+  adSlides.style.transform = `translateX(-${adIndex * 100}%)`;
+}
+
+function nextAd() {
+  adIndex = (adIndex + 1) % totalAds;
+  updateAd();
+}
+
+function prevAd() {
+  adIndex = (adIndex - 1 + totalAds) % totalAds;
+  updateAd();
+}
+
+/* Auto Slide */
+setInterval(nextAd, 3000);
+</script>
+
+</body>
+</html>

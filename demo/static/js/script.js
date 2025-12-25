@@ -369,3 +369,48 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+
+// hero section ..................
+
+//bar slider
+let index = 0;
+const slides = document.getElementById("slides");
+const totalSlides = 4;
+const pagination = document.getElementById("pagination");
+
+/* Create dots */
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement("div");
+  dot.className = "dot" + (i === 0 ? " active" : "");
+  dot.onclick = () => goToSlide(i);
+  pagination.appendChild(dot);
+}
+
+function updateSlider() {
+  slides.style.transform = `translateX(-${index * 100}%)`;
+  document.querySelectorAll(".dot").forEach((d, i) =>
+    d.classList.toggle("active", i === index)
+  );
+}
+
+function nextSlide() {
+  index = (index + 1) % totalSlides;
+  updateSlider();
+}
+
+function prevSlide() {
+  index = (index - 1 + totalSlides) % totalSlides;
+  updateSlider();
+}
+
+function goToSlide(i) {
+  index = i;
+  updateSlider();
+}
+
+/* Auto slide */
+setInterval(nextSlide, 4000);
+
+
+/* support */

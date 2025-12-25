@@ -36,6 +36,20 @@
       </div>
     </div>
 
+    <!--hero add slider-->
+    <!-- ===== ADVERTISEMENT SLIDER ===== -->
+    <div class="ad-bar">
+      <div class="ad-slides" id="adSlides">
+        <div class="ad">📚 Buy 10 Books & get Flat 10% OFF</div>
+        <div class="ad">🚚 Free Delivery on Orders Above ₹499</div>
+        <div class="ad">🎉 New Year Sale – Extra Discounts!</div>
+      </div>
+
+      <!-- Arrows -->
+      <div class="ad-arrow left" onclick="prevAd()">❮</div>
+      <div class="ad-arrow right" onclick="nextAd()">❯</div>
+    </div>
+
     <!-- Header -->
     <header>
       <nav class="navbar">
@@ -80,12 +94,49 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="bgimg-section">
-      <div class="overlay">
-        <h1>Welcome to Family BookStore</h1>
-        <p>Discover amazing deals on your favorite reads</p>
+    <!-- Hero Section -->
+    <div class="slider">
+      <div class="slides" id="slides">
+        <div class="slide slide1">
+          <div class="slide-content">
+            <h2>Why trust us?</h2>
+            <p>Millions of happy readers</p>
+            <button>Explore</button>
+          </div>
+        </div>
+
+        <div class="slide slide2">
+          <div class="slide-content">
+            <h2>Save on International</h2>
+            <p>Up to ₹25,000 Off</p>
+            <button>CODE: FKINT</button>
+          </div>
+        </div>
+
+        <div class="slide slide3">
+          <div class="slide-content">
+            <h2>New Year Sale</h2>
+            <p>Flat discounts on bestsellers</p>
+            <button>Shop Now</button>
+          </div>
+        </div>
+
+        <div class="slide slide4">
+          <div class="slide-content">
+            <h2>Free Delivery</h2>
+            <p>On orders worth ₹499+</p>
+            <button>Order Today</button>
+          </div>
+        </div>
       </div>
-    </section>
+
+      <!-- Arrows -->
+      <div class="arrow left" onclick="prevSlide()">❮</div>
+      <div class="arrow right" onclick="nextSlide()">❯</div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination"></div>
+    </div>
 
     <!-- Books Categories -->
     <section class="book-categories">
@@ -155,8 +206,7 @@
             <p class="price">
               {% if book.old_price %}
               <span class="old">Rs. {{ book.old_price }}</span>
-              {% endif %}
-              Rs. {{ book.price }}
+              {% endif %} Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -194,8 +244,7 @@
             <p class="price">
               {% if book.old_price %}
               <span class="old">Rs. {{ book.old_price }}</span>
-              {% endif %}
-              Rs. {{ book.price }}
+              {% endif %} Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -220,6 +269,54 @@
       </div>
     </section>
 
+    <!-- benifit sectionsssss -->
+    <section class="benefits-section">
+      <h2>Benefits of using Family Book Store</h2>
+
+      <div class="slider-indicator">
+        <span id="current">1</span> / <span id="total">3</span>
+      </div>
+
+      <div class="benefits">
+        <!-- Fast Delivery -->
+        <div class="benefit-box">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M3 3h13v10h5l-2-4h-3V3H3zm1 2v6h10V5H4zm13 8a2 2 0 100 4 2 2 0 000-4zM7 15a2 2 0 100 4 2 2 0 000-4z"
+            />
+          </svg>
+          <h3>Fast Delivery</h3>
+          <p>Orders are dispatched within 2 days usually</p>
+        </div>
+
+        <!-- Easy Exchange -->
+        <div class="benefit-box">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M12 5V1l-5 5 5 5V7c3.3 0 6 2.7 6 6a6 6 0 01-6 6 6 6 0 01-5.65-4H4.26A8 8 0 0012 21a8 8 0 000-16z"
+            />
+          </svg>
+          <h3>Easy Exchange</h3>
+          <p>We have 3 days Replacement / Exchange Policy</p>
+        </div>
+
+        <!-- Easy Support -->
+        <div class="benefit-box">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path
+              d="M12 1a9 9 0 00-9 9v5a3 3 0 003 3h2v-7H5v-1a7 7 0 0114 0v1h-3v7h2a3 3 0 003-3v-5a9 9 0 00-9-9z"
+            />
+          </svg>
+          <h3>Easy Support</h3>
+          <p>
+            Whatsapp No: <a href="tel:+1234567890">(+91) 1234567890</a><br />
+            Email:
+            <a href="temp@gmail.com">supportfamalybookstore.com</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- MOST READ COMBOS -->
     <section class="book-sale">
       <h2 class="section-title">MOST READ COMBOS</h2>
@@ -232,8 +329,7 @@
             <p class="price">
               {% if book.old_price %}
               <span class="old">Rs. {{ book.old_price }}</span>
-              {% endif %}
-              Rs. {{ book.price }}
+              {% endif %} Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -271,8 +367,7 @@
             <p class="price">
               {% if book.old_price %}
               <span class="old">Rs. {{ book.old_price }}</span>
-              {% endif %}
-              Rs. {{ book.price }}
+              {% endif %} Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -310,8 +405,7 @@
             <p class="price">
               {% if book.old_price %}
               <span class="old">Rs. {{ book.old_price }}</span>
-              {% endif %}
-              Rs. {{ book.price }}
+              {% endif %} Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -348,8 +442,7 @@
             <p class="price">
               {% if book.old_price %}
               <span class="old">Rs. {{ book.old_price }}</span>
-              {% endif %}
-              Rs. {{ book.price }}
+              {% endif %} Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -386,8 +479,7 @@
             <p class="price">
               {% if book.old_price %}
               <span class="old">Rs. {{ book.old_price }}</span>
-              {% endif %}
-              Rs. {{ book.price }}
+              {% endif %} Rs. {{ book.price }}
             </p>
             <button
               class="cart-btn add-to-cart-btn"
@@ -415,7 +507,7 @@
         </button>
       </div>
     </section>
-    
+
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-container">

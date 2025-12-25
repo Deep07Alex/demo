@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Number Pagination Slider</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Slider */
+.slider {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  height: 320px;
+  margin: 30px auto;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Slides */
+.slides {
+  display: flex;
+  width: 400%;
+  height: 100%;
+  transition: transform 0.6s ease;
+}
+
+.slide {
+  width: 100%;
+  flex-shrink: 0;
+  padding: 40px;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+/* Backgrounds */
+.slide1 { background: linear-gradient(120deg, #000, #004d40); }
+.slide2 { background: linear-gradient(120deg, #4f46e5, #0ea5e9); }
+.slide3 { background: linear-gradient(120deg, #9333ea, #ec4899); }
+.slide4 { background: linear-gradient(120deg, #16a34a, #22c55e); }
+
+/* Text */
+.slide h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+/* Pagination Numbers */
+.pagination {
+  position: absolute;
+  bottom: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.page {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  color: #000;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.page.active {
+  background: white;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .slide h2 {
+    font-size: 22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="slider">
+  <div class="slides" id="slides">
+
+    <div class="slide slide1">
+      <h2>Why trust us?</h2>
+    </div>
+
+    <div class="slide slide2">
+      <h2>Save on International – Up to ₹25,000</h2>
+    </div>
+
+    <div class="slide slide3">
+      <h2>New Year Sale</h2>
+    </div>
+
+    <div class="slide slide4">
+      <h2>Free Delivery Worth ₹499</h2>
+    </div>
+
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+let index = 0;
+const slides = document.getElementById("slides");
+const totalSlides = 4;
+const pagination = document.getElementById("pagination");
+let autoSlide;
+
+/* Create pagination numbers */
+for (let i = 0; i < totalSlides; i++) {
+  const page = document.createElement("div");
+  page.className = "page" + (i === 0 ? " active" : "");
+  page.innerText = i + 1;
+  page.onclick = () => {
+    index = i;
+    updateSlider();
+    resetAutoSlide();
+  };
+  pagination.appendChild(page);
+}
+
+function updateSlider() {
+  slides.style.transform = `translateX(-${index * 100}%)`;
+  document.querySelectorAll(".page").forEach((p, i) =>
+    p.classList.toggle("active", i === index)
+  );
+}
+
+function startAutoSlide() {
+  autoSlide = setInterval(() => {
+    index = (index + 1) % totalSlides;
+    updateSlider();
+  }, 4000);
+}
+
+function resetAutoSlide() {
+  clearInterval(autoSlide);
+  startAutoSlide();
+}
+
+startAutoSlide();
+</script>
+
+</body>
+</html>
