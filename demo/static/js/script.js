@@ -1,74 +1,75 @@
 // ============================================
 // Hero Section Slider (FIXED - Wrapped in IIFE)
 // ============================================
-(function() {
-    const slides = document.getElementById("slides");
-    const pagination = document.getElementById("pagination");
-    
-    // Exit if elements don't exist (not on homepage)
-    if (!slides || !pagination) return;
-    
-    // Local scoped variable to avoid conflicts
-    let currentSlideIndex = 0;
-    const totalSlides = 4;
-    
-    // Create dots
-    for (let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement("div");
-        dot.className = "dot" + (i === 0 ? " active" : "");
-        dot.onclick = () => goToSlide(i);
-        pagination.appendChild(dot);
-    }
-    
-    function updateSlider() {
-        slides.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-        document.querySelectorAll(".dot").forEach((d, i) =>
-            d.classList.toggle("active", i === currentSlideIndex)
-        );
-    }
-    
-    function nextSlide() {
-        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-        updateSlider();
-    }
-    
-    function prevSlide() {
-        currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
-        updateSlider();
-    }
-    
-    function goToSlide(i) {
-        currentSlideIndex = i;
-        updateSlider();
-    }
-    
-    // Auto slide
-    setInterval(nextSlide, 4000);
-    window.nextSlide = nextSlide; // Keep for arrow buttons
-    window.prevSlide = prevSlide;
-    window.goToSlide = goToSlide;
-})();
+let currentSlide = 0;
+const slides       = document.getElementById("slides");
+const dotsContainer= document.getElementById("pagination");
+const totalSlides  = document.querySelectorAll(".slide").length;
+
+let sliderInterval;
+
+/* create dots */
+dotsContainer.innerHTML = "";
+for(let i=0;i<totalSlides;i++){
+  const dot = document.createElement("div");
+  dot.className = "dot" + (i===0 ? " active" : "");
+  dot.onclick   = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+
+function updateSlider(){
+  slides.style.transform = `translateX(-${currentSlide*100}%)`;
+  document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("active", i===currentSlide));
+}
+function nextSlide(){
+  currentSlide = (currentSlide+1) % totalSlides;
+  updateSlider();
+}
+function prevSlide(){
+  currentSlide = (currentSlide-1+totalSlides) % totalSlides;
+  updateSlider();
+}
+function goToSlide(index){
+  currentSlide = index;
+  updateSlider();
+  restartAutoSlide();
+}
+function startAutoSlide(){
+  clearInterval(sliderInterval);
+  sliderInterval = setInterval(nextSlide,4000);
+}
+function restartAutoSlide(){
+  startAutoSlide();
+}
+
+/* init */
+startAutoSlide();
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
 
 // ============================================
 // Advertisement Slider (FIXED - Add null check)
 // ============================================
-(function() {
-    const adSlides = document.getElementById("adSlides");
-    if (!adSlides) return;
-    
-    let adIndex = 0;
-    const totalAdSlides = 3;
-    
-    window.nextAd = function() {
-        adIndex = (adIndex + 1) % totalAdSlides;
-        adSlides.style.transform = `translateX(-${adIndex * 100}%)`;
-    };
-    
-    window.prevAd = function() {
-        adIndex = (adIndex - 1 + totalAdSlides) % totalAdSlides;
-        adSlides.style.transform = `translateX(-${adIndex * 100}%)`;
-    };
-})();
+let adIndex = 0;
+const adSlides = document.getElementById("adSlides");
+const totalAds = adSlides.children.length;
+
+function updateAd() {
+  adSlides.style.transform = `translateX(-${adIndex * 100}%)`;
+}
+
+function nextAd() {
+  adIndex = (adIndex + 1) % totalAds;
+  updateAd();
+}
+
+function prevAd() {
+  adIndex = (adIndex - 1 + totalAds) % totalAds;
+  updateAd();
+}
+
+/* Auto Slide */
+setInterval(nextAd, 3000);
 
 // ============================================
 // Live Search with Dropdown (FIXED - Add null checks & debugging)
