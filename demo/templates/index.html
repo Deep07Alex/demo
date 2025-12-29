@@ -165,6 +165,14 @@
         />
         <p>BUSINESS & STOCK-MARKET</p>
       </div>
+
+      <div
+        class="category"
+        onclick="location.href='/category/business-stock-market/';"
+      >
+        <img src="{% static 'images/combo.png' %}" alt="Mega Combo" />
+        <p>Mega Combo</p>
+      </div>
     </section>
 
     <!-- NEW ARRIVALS -->
@@ -360,6 +368,43 @@
       </div>
       <div class="view-all">
         <button class="view-btn" id="btn4" data-category="self-improvements">
+          View all
+        </button>
+      </div>
+    </section>
+
+    <!-- Mega Combo BOOKS -->
+    <section class="book-sale">
+      <h2 class="section-title">Mega Combo</h2>
+      <div class="book-grid">
+        {% for book in hindi_books|slice:":10" %}
+        <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+          <div class="book-card">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" />
+            <h3 class="book-title">{{ book.title }}</h3>
+            <p class="price">
+              {% if book.old_price %}
+              <span class="old">Rs. {{ book.old_price }}</span>
+              {% endif %} Rs. {{ book.price }}
+            </p>
+            <button
+              class="cart-btn add-to-cart-btn"
+              data-id="{{ book.id }}"
+              data-type="book"
+              data-title="{{ book.title|escapejs }}"
+              data-price="{{ book.price }}"
+              data-image="{{ book.image.url }}"
+            >
+              Add to cart
+            </button>
+          </div>
+        </a>
+        {% empty %}
+        <p style="text-align: center">No books available right now.</p>
+        {% endfor %}
+      </div>
+      <div class="view-all">
+        <button class="view-btn" id="btn6" data-category="hindi-books">
           View all
         </button>
       </div>
