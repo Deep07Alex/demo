@@ -527,7 +527,11 @@ body {
 #book_offer     { background-image: url("../images/books_off_1200x480.png"); }
 #delivery_offer { background-image: url("../images/family_bookstore_1200x480.png"); }
 #manga_offer    { background-image: url("../images/manga_comics_1200x480.png"); }
+<<<<<<< HEAD
 #best_sellers_offer    { background-image: url("../images/mega_combo_1200x480.png"); }
+=======
+#mega_offer     { background-image: url("../images/mega_combo_1200x480.png"); }
+>>>>>>> a45b226a12829254da54c846cdf64d65f81431de
 
 /* ---------- Arrows ---------- */
 .arrow {
@@ -593,6 +597,27 @@ body {
   .pagination {
     bottom: 10px;
   }
+<<<<<<< HEAD
+=======
+}
+
+/* ---------- Small Phones ---------- */
+@media (max-width: 480px) {
+
+  .slider {
+    aspect-ratio: 16 / 9;   /* ✅ better phone ratio */
+    border-radius: 10px;
+  }
+
+  .arrow {
+    display: none;          /* ✅ touch swipe friendly */
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+  }
+>>>>>>> a45b226a12829254da54c846cdf64d65f81431de
 }
 
 /* ---------- Small Phones ---------- */
