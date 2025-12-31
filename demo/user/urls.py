@@ -1,9 +1,8 @@
 from django.urls import path
 from . import views
-from user import views as user_views
 
 urlpatterns = [
-    path('api/send-otp/', views.send_otp, name='send_otp'),
-    path('api/verify-otp/', views.verify_otp, name='verify_otp'),
-    path('api/resend-otp/', views.resend_otp, name='resend_otp'),
+    path('api/send-verification/', views.send_verification, name='send_verification'),
+    path('api/verify-token/', views.verify_token, name='verify_token'),
+    path('api/resend-verification/', views.resend_verification, name='resend_verification'),
 ]

@@ -13,13 +13,18 @@ def home_page(request):
         'romance_sale_books': Book.objects.filter(category='romance', on_sale=True).order_by('title'),
         'hindi_books': Book.objects.filter(category='hindi').order_by('title'),
         'business_stock_market_books': Book.objects.filter(category='business_stock_market').order_by('title'),
-        'mega_combo_books': Book.objects.filter(category='mega_combo').order_by('title'),
+        'best_sellers_books': Book.objects.filter(category='best_sellers').order_by('title'),
     }
     return render(request, 'index.html', context)
 
 def book_detail(request, slug):
     book = get_object_or_404(Book, slug=slug)
-    return render(request, 'book_detail.html', {'book': book})
+    suggested_books = Book.objects.exclude(id=book.id).order_by('?')[:10]
+    return render(request, 'book_detail.html', {
+        'book': book,
+        'suggested_books': suggested_books,
+        'model_type': 'book',
+    })
 
 CATEGORY_SLUG_MAP = {
     'new-arrivals': {'category': 'new_arrivals', 'on_sale': False, 'name': 'NEW ARRIVALS'},
@@ -29,7 +34,7 @@ CATEGORY_SLUG_MAP = {
     'romance-sale': {'category': 'romance', 'on_sale': True, 'name': 'ROMANCE ON SALE'},
     'hindi-books': {'category': 'hindi', 'on_sale': False, 'name': 'HINDI BOOKS'},
     'business-stock-market': {'category': 'business_stock_market', 'on_sale': False, 'name': 'BUSINESS & STOCK-MARKET'},
-    'mega-combo': {'category': 'mega_combo', 'on_sale': False, 'name': 'MEGA COMBO'},
+    'best-sellers': {'category': 'best_sellers', 'on_sale': False, 'name': 'BEST SELLERS'},
 }
 
 # homepage/views.py
@@ -46,18 +51,18 @@ def category_view(request, category_slug):
     books = books.order_by('title')
     total_books = books.count()
 
-    books_to_show = books[:20]
 
-    has_more = total_books > 20
+    paginator = Paginator(books, 20) 
+    books_page = paginator.page(1)
 
-    print(f"DEBUG: Category '{category_slug}' - Total: {total_books}, Has More: {has_more}")
+    has_more = books_page.has_next()
     
     return render(request, 'pages/category_detail.html', {
-        'books': books_to_show,
+        'books': books_page.object_list,
         'category_name': config['name'],
         'category_slug': category_slug,
         'has_more': has_more,
-        'total_books': total_books,  
+        'total_books': total_books,
     })
     
 def category_load_more(request, category_slug):
@@ -75,22 +80,26 @@ def category_load_more(request, category_slug):
         books = books.filter(on_sale=True)
     
     books = books.order_by('title')
-    paginator = Paginator(books, 30)  # 30 per load
+    paginator = Paginator(books, 20)  # Must match initial load
     
     try:
         books_page = paginator.page(page)
     except:
         return JsonResponse({'success': False, 'error': 'No more books'})
     
-    books_data = [{
-        'id': book.id,
-        'title': book.title,
-        'slug': book.slug,
-        'price': str(book.price),
-        'old_price': str(book.old_price) if book.old_price else None,
-        'image_url': book.image.url if book.image else '',
-        'on_sale': book.on_sale,
-    } for book in books_page]
+    books_data = []
+    for book in books_page:
+        image_url = book.image.url if book.image else '/static/images/placeholder.png'
+        
+        books_data.append({
+            'id': book.id,
+            'title': book.title,
+            'slug': book.slug,
+            'price': str(book.price),
+            'old_price': str(book.old_price) if book.old_price else None,
+            'image_url': image_url,
+            'on_sale': book.on_sale,
+        })
     
     return JsonResponse({
         'success': True,

@@ -10,7 +10,7 @@ class BookAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Book Details', {
-            'fields': ('title', 'slug', 'image', 'category') 
+            'fields': ('title', 'slug', 'image', 'category', 'description')  
         }),
         ('Pricing', {
             'fields': ('price', 'old_price', 'on_sale')
@@ -21,4 +21,3 @@ class BookAdmin(admin.ModelAdmin):
     )
 
     readonly_fields = ('date_added',)
-    

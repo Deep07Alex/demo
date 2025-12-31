@@ -1,30 +1,122 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Payment Success - Family BookStore{% endblock %}
+{% block title %}Payment Successful - Family BookStore{% endblock %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center p-6">
-  <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-    <div class="text-green-500 text-6xl mb-4">✓</div>
-    <h1 class="text-2xl font-bold mb-2">Payment Successful!</h1>
-    <p class="text-gray-600 mb-4">Your order has been placed successfully.</p>
-    
-    {% if notification_sent %}
-      <div class="bg-green-50 text-green-700 p-3 rounded-lg mb-4 text-sm">
-        Order confirmation sent to your {{ delivery_method|default:"phone" }}!
-      </div>
-    {% endif %}
-    
-    <div class="bg-gray-50 rounded-lg p-4 mb-4 text-left">
-      <p><strong>Order ID:</strong> {{ order.order_id }}</p>
-      <p><strong>Amount:</strong> ₹{{ order.total }}</p>
-      <p><strong>Status:</strong> <span class="text-green-600">Paid</span></p>
+<div class="payment-success-container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div class="success-header" style="text-align: center; margin-bottom: 30px;">
+        <div class="success-icon" style="font-size: 60px; color: #10b981; margin-bottom: 20px;">
+            ✅
+        </div>
+        <h1 style="color: #10b981; margin-bottom: 10px;">Payment Successful!</h1>
+        <p style="color: #666;">Your order has been confirmed and is being processed.</p>
     </div>
-    
-    <a href="/" class="bg-[#e20074] text-white px-6 py-2 rounded-lg font-semibold hover:bg-pink-700 inline-block">
-      Continue Shopping
-    </a>
-  </div>
+
+    <div class="order-details" style="background: #f9fafb; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <h2 style="margin-bottom: 15px; color: #333;">Order Details</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <strong>Order ID:</strong> #{{ order.id }}
+            </div>
+            <div>
+                <strong>Order Date:</strong> {{ order.created_at|date:"d M Y" }}
+            </div>
+            <div>
+                <strong>Email:</strong> {{ order.email }}
+            </div>
+            <div>
+                <strong>Total Amount:</strong> ₹{{ order.total }}
+            </div>
+        </div>
+    </div>
+
+    <div class="shipping-info" style="background: #f9fafb; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <h2 style="margin-bottom: 15px; color: #333;">Shipping Information</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <strong>Delivery Address:</strong><br>
+                {{ order.full_name }}<br>
+                {{ order.address }}<br>
+                {{ order.city }}, {{ order.state }} - {{ order.pin_code }}
+            </div>
+            <div>
+                <strong>Delivery Type:</strong> {{ order.delivery_type }}<br>
+                <strong>Estimated Delivery:</strong> 3-6 business days
+            </div>
+        </div>
+    </div>
+
+    {% if shiprocket_order_id %}
+    <div class="shiprocket-info" style="background: #e0f2fe; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #0288d1;">
+        <h2 style="margin-bottom: 15px; color: #0277bd;">
+            <i class="fas fa-shipping-fast"></i> Shipping Status
+        </h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <strong>Shiprocket Order ID:</strong> {{ shiprocket_order_id }}
+            </div>
+            <div>
+                <strong>Status:</strong> {{ shiprocket_status }}
+            </div>
+        </div>
+        <p style="margin-top: 10px; font-size: 14px; color: #666;">
+            You will receive tracking updates via email and SMS once your order is dispatched.
+        </p>
+    </div>
+    {% endif %}
+
+    <div class="next-steps" style="background: #fff3e0; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <h2 style="margin-bottom: 15px; color: #f57c00;">What's Next?</h2>
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px;">
+                <i class="fas fa-check-circle" style="color: #10b981; margin-right: 8px;"></i>
+                You will receive an order confirmation email shortly
+            </li>
+            <li style="margin-bottom: 10px;">
+                <i class="fas fa-truck" style="color: #0288d1; margin-right: 8px;"></i>
+                We'll send tracking information once your order ships
+            </li>
+            <li style="margin-bottom: 10px;">
+                <i class="fas fa-phone" style="color: #f57c00; margin-right: 8px;"></i>
+                For any queries, contact us at support@familybookstore.com
+            </li>
+        </ul>
+    </div>
+
+    <div class="action-buttons" style="text-align: center; margin-top: 30px;">
+        <a href="/" class="btn" style="background: #e20074; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin-right: 10px;">
+            Continue Shopping
+        </a>
+        <a href="/order-tracking/" class="btn" style="background: #0288d1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
+            Track Order
+        </a>
+    </div>
 </div>
+
+<style>
+    .payment-success-container {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .btn:hover {
+        opacity: 0.9;
+        transition: opacity 0.2s;
+    }
+</style>
+
+<script>
+    // Track order if Shiprocket ID is available
+    {% if shiprocket_order_id %}
+    setTimeout(() => {
+        fetch(`/api/track-order/{{ order.id }}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Tracking data:', data.tracking_data);
+                }
+            })
+            .catch(error => console.error('Tracking error:', error));
+    }, 2000);
+    {% endif %}
+</script>
 {% endblock %}

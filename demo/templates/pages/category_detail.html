@@ -1,6 +1,8 @@
-{% extends "base.html" %} {% load static %} {% block title %}{{ category_name }}
-- Family BookStore{% endblock %} {% block content %}
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}{{ category_name }} - Family BookStore{% endblock %} 
 
+{% block content %}
 <section class="book-category-page">
   <h2 class="section-title">{{ category_name }}</h2>
 
@@ -26,7 +28,7 @@
           class="cart-btn add-to-cart-btn"
           data-id="{{ book.id }}"
           data-type="book"
-          data-title="{{ book.title|escapejs }}"
+          data-title="{{ book.title|escape }}"
           data-price="{{ book.price }}"
           data-image="{{ book.image.url }}"
         >
@@ -41,34 +43,18 @@
     {% endfor %}
   </div>
 
-  <!-- Load More Button - ALWAYS RENDER but hide with CSS if needed -->
+  <!-- Load More Button -->
   {% if has_more %}
   <div class="load-more-container" style="text-align: center; margin: 30px 0">
     <button id="loadMoreBtn" class="view-btn" style="display: inline-block">
-      Load More Books
+      Load More 
     </button>
   </div>
-  {% else %}
-  <!-- DEBUG: Show why button is hidden -->
-  <div style="text-align: center; margin: 30px; color: #999"></div>
   {% endif %}
 </section>
-{% endblock %} {% block extra_js %}
+{% endblock %} 
+
+{% block extra_js %}
 <script src="{% static 'js/script.js' %}"></script>
 <script src="{% static 'js/cart.js' %}"></script>
-<!-- Add this to ensure load more works -->
-<script>
-  // Make sure load more function is available
-  document.addEventListener("DOMContentLoaded", function () {
-    const loadMoreBtn = document.getElementById("loadMoreBtn");
-    const bookGrid = document.getElementById("bookGrid");
-
-    if (loadMoreBtn && bookGrid) {
-      console.log("Load More: Elements found, attaching listener");
-      // Your existing JS will attach the listener
-    } else {
-      console.error("Load More: Elements NOT found!");
-    }
-  });
-</script>
 {% endblock %}

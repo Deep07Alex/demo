@@ -4,11 +4,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Family BookStore</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css    "
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css     "
     />
   </head>
   <body>
@@ -27,12 +28,7 @@
           <span>Total:</span>
           <span id="cartTotal">₹0.00</span>
         </div>
-        <button
-          class="checkout-btn"
-          onclick="window.location.href='/checkout/'"
-        >
-          Proceed to Checkout
-        </button>
+        <button class="checkout-btn">Proceed to Checkout</button>
       </div>
     </div>
 
@@ -40,9 +36,9 @@
     <!-- ===== ADVERTISEMENT SLIDER ===== -->
     <div class="ad-bar">
       <div class="ad-slides" id="adSlides">
-        <div class="ad">📚 Buy 10 Books & get Flat 10% OFF</div>
-        <div class="ad">🚚 Free Delivery on Orders Above ₹499</div>
-        <div class="ad">🎉 New Year Sale – Extra Discounts!</div>
+        <div class="ad">📚 Upto 90 % Discount on All Books</div>
+        <div class="ad">🚚 Cash On Delivery Available</div>
+        <div class="ad">🎉 Shop for ₹499 & get free delivery</div>
       </div>
 
       <!-- Arrows -->
@@ -94,13 +90,27 @@
     </header>
 
     <!-- ================= Hero Slider ================= -->
-    <!-- ================= Hero Slider ================= -->
     <div class="slider">
       <div class="slides" id="slides">
         <div class="slide" id="book_offer"></div>
-        <div class="slide" id="delivery_offer"></div>
-        <a href="/category/manga-comics/" class="slide" id="manga_offer"></a>
-        <a href="/category/mega-combo/" class="slide" id="mega_offer"></a>
+
+        <a
+          href="/category/best-sellers/"
+          class="slide link-slide"
+          id="delivery_offer"
+        ></a>
+
+        <a
+          href="/category/manga-comics/"
+          class="slide link-slide"
+          id="manga_offer"
+        ></a>
+
+        <a
+          href="/category/most-read-combos/"
+          class="slide link-slide"
+          id="best_sellers_offer"
+        ></a>
       </div>
 
       <!-- Arrows -->
@@ -166,9 +176,9 @@
         <p>BUSINESS & STOCK-MARKET</p>
       </div>
 
-      <div class="category" onclick="location.href='/category/mega-combo/';">
-        <img src="{% static 'images/combo.png' %}" alt="Mega Combo" />
-        <p>Mega Combo</p>
+      <div class="category" onclick="location.href='/category/best-sellers/';">
+        <img src="{% static 'images/best_seller.png' %}" alt="Best Sellers" />
+        <p>BEST SELLERS</p>
       </div>
     </section>
 
@@ -190,7 +200,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -228,7 +238,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -313,7 +323,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -351,7 +361,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -389,7 +399,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -426,7 +436,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -463,7 +473,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -488,9 +498,9 @@
 
     <!-- MEGA COMBO -->
     <section class="book-sale">
-      <h2 class="section-title">MEGA COMBO</h2>
+      <h2 class="section-title">BEST SELLERS</h2>
       <div class="book-grid">
-        {% for book in mega_combo_books|slice:":10" %}
+        {% for book in best_sellers_books|slice:":10" %}
         <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
           <div class="book-card">
             <img src="{{ book.image.url }}" alt="{{ book.title }}" />
@@ -504,7 +514,7 @@
               class="cart-btn add-to-cart-btn"
               data-id="{{ book.id }}"
               data-type="book"
-              data-title="{{ book.title|escapejs }}"
+              data-title="{{ book.title|escape }}"
               data-price="{{ book.price }}"
               data-image="{{ book.image.url }}"
             >
@@ -517,7 +527,7 @@
         {% endfor %}
       </div>
       <div class="view-all">
-        <button class="view-btn" id="btn8" data-category="mega-combo">
+        <button class="view-btn" id="btn8" data-category="best-sellers">
           View all
         </button>
       </div>
@@ -558,11 +568,11 @@
         <p>© 2025, Family Book Store</p>
         <div class="payment-icons">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png     "
+            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png      "
             alt="Visa"
           />
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png     "
+            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png      "
             alt="MasterCard"
           />
         </div>

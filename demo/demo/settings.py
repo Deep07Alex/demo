@@ -7,7 +7,7 @@ For more information on this file, see
 
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/5.2/ref/settings/
+https://docs.djangoproject.com/en/5.2/ref/settings/ 
 """
 
 import os
@@ -23,11 +23,19 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'e8eea78f0595.ngrok-free.app',
+]
 
-# Hosts/domain names that this Django site can serve
-# In development: localhost, 127.0.0.1
-# In production: your domain/IP (e.g., '72.61.231.154')
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = [
+    'https://e8eea78f0595.ngrok-free.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000 ',
+]
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
 
 
 # Application definition
@@ -73,7 +81,7 @@ TEMPLATES = [
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -95,12 +103,12 @@ WHATSAPP_PHONE_ID = os.getenv('WHATSAPP_PHONE_ID')
 PAYU_MERCHANT_KEY = os.getenv('PAYU_MERCHANT_KEY')
 PAYU_MERCHANT_SALT = os.getenv('PAYU_MERCHANT_SALT')
 PAYU_TEST_MODE = os.getenv('PAYU_TEST_MODE', 'True') == 'True'
-PAYU_TEST_URL = "https://test.payu.in/_payment"
-PAYU_PROD_URL = "https://secure.payu.in/_payment"
+PAYU_TEST_URL = "https://test.payu.in/_payment "
+PAYU_PROD_URL = "https://secure.payu.in/_payment "
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators 
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -118,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# https://docs.djangoproject.com/en/5.2/topics/i18n/ 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -126,7 +134,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+# https://docs.djangoproject.com/en/5.2/howto/static-files/ 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -137,7 +145,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
@@ -153,4 +161,6 @@ DEFAULT_FROM_EMAIL = f'Family BookStore <{os.getenv("EMAIL_HOST_USER")}>'
 # Admin email for order notifications
 ADMIN_ORDER_EMAIL = os.getenv('ADMIN_ORDER_EMAIL')
 
-
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False

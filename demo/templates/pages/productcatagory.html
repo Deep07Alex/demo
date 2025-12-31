@@ -4,10 +4,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Collections</title>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css   "
     />
     <link rel="stylesheet" href="{% static 'css/productcatagory.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
@@ -28,12 +29,7 @@
           <span>Total:</span>
           <span id="cartTotal">₹0.00</span>
         </div>
-        <button
-          class="checkout-btn"
-          onclick="window.location.href='/checkout/'"
-        >
-          Proceed to Checkout
-        </button>
+        <button class="checkout-btn">Proceed to Checkout</button>
       </div>
     </div>
 
@@ -138,11 +134,11 @@
         <p>© 2025, Family Book Store</p>
         <div class="payment-icons">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png"
+            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png   "
             alt="Visa"
           />
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png"
+            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png   "
             alt="MasterCard"
           />
         </div>

@@ -1,28 +1,27 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
+from django.views.decorators.http import require_POST
 from homepage.models import Book
 from product_categories.models import Product
-from django.views.decorators.http import require_POST
 import json
-from django.shortcuts import redirect, get_object_or_404
-from homepage.models import Book
+
+def normalize_title(title):
+    return title.lower().strip().replace(' ', '_')
 
 def search_suggestions(request):
     """Return JSON search results for live autocomplete - no duplicates"""
     query = request.GET.get('q', '').strip()
     results = []
-    seen_titles = set()  # Track titles to prevent duplicates
+    seen_titles = set()
     
-    if len(query) >= 2:  
-        # Search books from homepage (prioritize these)
+    if len(query) >= 2:
+        # Search books from homepage
         books = Book.objects.filter(
             Q(title__icontains=query) | 
             Q(category__icontains=query)
         )[:5]
         
-        # Add books first
         for book in books:
             title_lower = book.title.lower().strip()
             if title_lower not in seen_titles:
@@ -41,7 +40,6 @@ def search_suggestions(request):
             Q(category__name__icontains=query)
         )[:5]
         
-        # Add products only if title hasn't been seen
         for product in products:
             title_lower = product.title.lower().strip()
             if title_lower not in seen_titles:
@@ -60,7 +58,6 @@ def buy_now(request, book_id):
     """Add a single book to cart and redirect to checkout"""
     book = get_object_or_404(Book, id=book_id)
     
-    # Clear existing cart and add only this book
     cart = {}
     key = f"book_{book.id}"
     cart[key] = {
@@ -76,7 +73,6 @@ def buy_now(request, book_id):
     
     return redirect('checkout')
 
-# Cart helper functions
 def get_cart(request):
     return request.session.get('cart', {})
 
@@ -129,8 +125,7 @@ def update_cart_addons(request):
         request.session['cart_addons'] = addons
         request.session.modified = True
         
-        # Calculate addon total
-        addon_prices = {'highlighter': 15, 'bookmark': 10, 'packing': 20}
+        addon_prices = {'Bag': 30, 'bookmark': 20, 'packing': 20}
         addon_total = sum(addon_prices.get(key, 0) for key, selected in addons.items() if selected)
         
         return JsonResponse({
@@ -143,7 +138,7 @@ def update_cart_addons(request):
 def get_cart_addons(request):
     """Get cart add-ons and their total"""
     addons = request.session.get('cart_addons', {})
-    addon_prices = {'highlighter': 15, 'bookmark': 10, 'packing': 20}
+    addon_prices = {'Bag': 30, 'bookmark': 20, 'packing': 20}
     addon_total = sum(addon_prices.get(key, 0) for key, selected in addons.items() if selected)
     
     return JsonResponse({
@@ -151,30 +146,37 @@ def get_cart_addons(request):
         'addon_total': addon_total
     })
 
-# THE CORRECT VERSION WITH ADDON SUPPORT
 def get_cart_items(request):
     """Get cart items for display"""
     cart = get_cart(request)
     items = list(cart.values())
     
-    # Calculate addon total
     addons = request.session.get('cart_addons', {})
-    addon_prices = {'highlighter': 15, 'bookmark': 10, 'packing': 20}
+    addon_prices = {'Bag': 30, 'bookmark': 20, 'packing': 20}
     addon_total = sum(addon_prices.get(key, 0) for key, selected in addons.items() if selected)
     
+    # Smart pricing
+    total_books = sum(item['quantity'] for item in cart.values())
     product_total = sum(float(item['price']) * item['quantity'] for item in cart.values())
-    total = product_total + addon_total
+    
+    shipping = 0 if product_total >= 499 else 49.00
+    discount = 100 if total_books >= 10 else 0
+    
+    total = product_total + shipping + addon_total - discount
     
     return JsonResponse({
         'cart_count': sum(item['quantity'] for item in cart.values()),
         'items': items,
         'addon_total': addon_total,
-        'total': total
+        'shipping': shipping,
+        'discount': discount,
+        'total': total,
+        'total_books': total_books,
     })
 
 @require_POST
 def remove_from_cart(request):
-    """Remove item from cart with proper error handling"""
+    """Remove item from cart"""
     try:
         data = json.loads(request.body)
         cart = get_cart(request)
@@ -186,10 +188,8 @@ def remove_from_cart(request):
         if key in cart:
             del cart[key]
             save_cart(request, cart)
-            print(f"DEBUG: Removed item {key} from cart. New cart: {cart}")  # Debug log
         else:
-            print(f"DEBUG: Key {key} not found in cart")  # Debug log
-            return JsonResponse({'success': False, 'error': 'Item not found in cart'}, status=404)
+            return JsonResponse({'success': False, 'error': 'Item not found'}, status=404)
         
         return JsonResponse({
             'success': True,
@@ -197,13 +197,11 @@ def remove_from_cart(request):
             'total': sum(item['price'] * item['quantity'] for item in cart.values())
         })
     except Exception as e:
-        print(f"ERROR in remove_from_cart: {e}")  # Debug log
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
-# Also update update_cart_quantity to be consistent
 @require_POST
 def update_cart_quantity(request):
-    """Update item quantity with proper error handling"""
+    """Update item quantity"""
     try:
         data = json.loads(request.body)
         cart = get_cart(request)
@@ -219,20 +217,17 @@ def update_cart_quantity(request):
             else:
                 cart[key]['quantity'] = quantity
             save_cart(request, cart)
-            print(f"DEBUG: Updated quantity for {key} to {quantity}. New cart: {cart}")  # Debug log
         else:
-            print(f"DEBUG: Key {key} not found in cart")  # Debug log
-            return JsonResponse({'success': False, 'error': 'Item not found in cart'}, status=404)
+            return JsonResponse({'success': False, 'error': 'Item not found'}, status=404)
         
         return JsonResponse({
             'success': True,
             'cart_count': sum(item['quantity'] for item in cart.values()),
             'total': sum(item['price'] * item['quantity'] for item in cart.values())
         })
-    except ValueError as e:
+    except ValueError:
         return JsonResponse({'success': False, 'error': 'Invalid quantity'}, status=400)
     except Exception as e:
-        print(f"ERROR in update_cart_quantity: {e}")  # Debug log
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 def search(request):
@@ -241,17 +236,14 @@ def search(request):
     results = []
 
     if query:
-        # Search books
         book_results = Book.objects.filter(
             Q(title__icontains=query) | Q(category__icontains=query)
         )
         
-        # Search products
         product_results = Product.objects.filter(
             Q(title__icontains=query) | Q(category__name__icontains=query)
         )
         
-        # Combine results
         results = list(book_results) + list(product_results)
     
     return render(request, 'pages/search_results.html', {
@@ -259,38 +251,6 @@ def search(request):
         'results': results
     })
 
-# THE CORRECT VERSION WITH ADDON SUPPORT
-def checkout(request):
-    cart = get_cart(request)
-    cart_items = list(cart.values())
-    
-    # Calculate product subtotal
-    subtotal = sum(float(item['price']) * item['quantity'] for item in cart_items)
-    
-    # Calculate addon total from session
-    addons = request.session.get('cart_addons', {})
-    addon_prices = {'highlighter': 15, 'bookmark': 10, 'packing': 20}
-    addon_total = sum(addon_prices.get(key, 0) for key, selected in addons.items() if selected)
-    
-    shipping = 49.00
-    total = subtotal + shipping + addon_total
-    
-    # Add initials for placeholder images if image is missing
-    for item in cart_items:
-        if not item.get('image'):
-            words = item['title'].split()
-            item['initials'] = ''.join([word[0].upper() for word in words[:2]])
-    
-    context = {
-        'cart_items': cart_items,
-        'subtotal': subtotal,
-        'shipping': shipping,
-        'addon_total': addon_total,
-        'total': total,
-        'addons': addons,
-    }
-    
-    return render(request, 'pages/payment.html', context)
 
 def home_page(request):
     return render(request, 'index.html')

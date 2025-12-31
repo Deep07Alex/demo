@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css   "
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css      "
     />
   </head>
 
@@ -31,12 +31,7 @@
           <span>Total:</span>
           <span id="cartTotal">₹0.00</span>
         </div>
-        <button
-          class="checkout-btn"
-          onclick="window.location.href='/checkout/'"
-        >
-          Proceed to Checkout
-        </button>
+        <button class="checkout-btn">Proceed to Checkout</button>
       </div>
     </div>
 
@@ -119,7 +114,7 @@
           class="add-cart add-to-cart-btn"
           data-id="{{ book.id }}"
           data-type="book"
-          data-title="{{ book.title|escapejs }}"
+          data-title="{{ book.title|escape }}"
           data-price="{{ book.price }}"
           data-image="{{ book.image.url }}"
         >
@@ -129,7 +124,7 @@
         <button
           class="buy-now"
           data-id="{{ book.id }}"
-          data-title="{{ book.title|escapejs }}"
+          data-title="{{ book.title|escape }}"
           data-price="{{ book.price }}"
           data-image="{{ book.image.url }}"
         >
@@ -154,6 +149,14 @@
       </div>
     </div>
 
+    {% comment %} ADD THIS DESCRIPTION SECTION {% endcomment %} 
+    {% if book.description %}
+    <div class="book-description">
+      <h3 style="margin-bottom: 10px; font-size: 18px">About This Book</h3>
+      <p style="line-height: 1.6; color: #555">{{ book.description|escape }}</p>
+    </div>
+    {% endif %}
+
     <!-- Right-Side Slider -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -169,6 +172,54 @@
         <li><a href="/contactinformation/">Contact Us</a></li>
       </ul>
     </div>
+
+    <!-- === SUGGESTIONS SECTION - ALWAYS USE BOOK URLs === -->
+    <section class="book-sale">
+      <h2 class="section-title">You Might Also Like</h2>
+      <div class="book-grid">
+        {% for suggested_book in suggested_books %}
+        <div class="book-card">
+          <!-- ALWAYS link to homepage book_detail -->
+          <a
+            href="{% url 'book_detail' suggested_book.slug %}"
+            class="book-card-link"
+          >
+            <img
+              src="{{ suggested_book.image.url }}"
+              alt="{{ suggested_book.title }}"
+              onerror="this.src='{% static 'images/placeholder.png' %}'; this.onerror=null;"
+            />
+            {% if suggested_book.on_sale %}
+            <span class="sale-tag">Sale</span>
+            {% endif %}
+            <h3 class="book-title">{{ suggested_book.title }}</h3>
+            <p class="price">
+              {% if suggested_book.old_price %}
+              <span class="old">Rs. {{ suggested_book.old_price }}</span>
+              {% endif %} Rs. {{ suggested_book.price }}
+            </p>
+          </a>
+
+          <!-- Button outside link -->
+          <button
+            class="cart-btn add-to-cart-btn"
+            data-id="{{ suggested_book.id }}"
+            data-type="book"
+            data-title="{{ suggested_book.title|escapejs }}"
+            data-price="{{ suggested_book.price }}"
+            data-image="{{ suggested_book.image.url }}"
+          >
+            Add to cart
+          </button>
+        </div>
+        {% empty %}
+        <p style="text-align: center; grid-column: 1/-1">
+          No suggestions available right now.
+        </p>
+        {% endfor %}
+      </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-container">
@@ -204,11 +255,11 @@
         <p>© 2025, Family Book Store</p>
         <div class="payment-icons">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png   "
+            src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png      "
             alt="Visa"
           />
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png   "
+            src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png      "
             alt="MasterCard"
           />
         </div>
