@@ -1,4 +1,4 @@
-// Wrap everything in DOMContentLoaded
+// cart.js - FIXED VERSION
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded: Cart initializing...");
 
@@ -21,6 +21,23 @@ document.addEventListener("DOMContentLoaded", () => {
     init() {
       this.attachEventListeners();
       this.updateCartDisplay();
+      
+      // 🔥 FIX: Handle browser back/forward navigation (bfcache)
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted || performance.getEntriesByType("navigation")[0]?.type === 'back_forward') {
+          console.log('Page loaded from cache, forcing cart refresh...');
+          setTimeout(() => this.updateCartDisplay(), 150);
+        }
+      });
+      
+      // 🔥 FIX: Refresh cart when page becomes visible again
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          console.log('Page became visible, refreshing cart...');
+          this.updateCartDisplay();
+        }
+      });
+
       console.log("CartManager: Fully initialized");
     }
 
@@ -39,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Overlay click to close
       this.cartOverlay.addEventListener("click", () => this.closeCart());
 
-      // Add to cart buttons
+      // Add to cart buttons (event delegation)
       document.addEventListener("click", (e) => {
         if (e.target.classList.contains("add-to-cart-btn")) {
           e.preventDefault();
@@ -56,12 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Checkout button - DIRECT PAYU
+      // 🔥 FIX: Checkout button - Redirect to checkout page (NOT direct payment)
       const checkoutBtn = document.querySelector(".checkout-btn");
       if (checkoutBtn) {
         checkoutBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          this.proceedToPayment();
+          e.stopPropagation();
+          console.log('🔄 Redirecting to checkout page...');
+          window.location.href = '/checkout/';
         });
       }
     }
@@ -75,8 +94,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       this.isProcessing = true;
+      const btn = document.querySelector(`[data-id="${product.id}"][data-type="${product.type}"]`);
 
       try {
+        // Show loading state
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = 'Adding...';
+        }
+
         const csrfToken = this.getCSRFToken();
         const response = await fetch("/cart/add/", {
           method: "POST",
@@ -94,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
           await this.updateCartDisplay();
           this.showNotification("Added to cart!");
 
-          // ✅ AUTO-OPEN CART SIDEBAR AFTER ADDING
+          // ✅ Auto-open cart sidebar after adding
           setTimeout(() => {
             this.openCart();
           }, 300);
@@ -107,6 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Network error: " + error.message);
       } finally {
         this.isProcessing = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Add to cart';
+        }
       }
     }
 
@@ -174,11 +204,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async updateCartDisplay() {
       try {
+        console.log('📡 Fetching cart items from /cart/items/...');
         const response = await fetch("/cart/items/");
-        if (!response.ok)
+        
+        if (!response.ok) {
+          console.error(`HTTP error! status: ${response.status}`);
           throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
+        console.log('📦 Cart data received:', data); // 🔥 DEBUG LOG
 
         if (this.cartCountEl) {
           if (data.cart_count > 0) {
@@ -207,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
           data.addon_total || 0
         );
       } catch (error) {
-        console.error("Display error:", error);
+        console.error("❌ Display error:", error);
         this.showNotification("Error loading cart", "error");
       }
     }
@@ -351,61 +386,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // NEW: Direct PayU payment
-    async proceedToPayment() {
-      if (this.isProcessing) {
-        alert("Please wait for current process to complete");
-        return;
-      }
-
-      this.isProcessing = true;
-      const btn = document.querySelector(".checkout-btn");
-      btn.disabled = true;
-      btn.textContent = "Redirecting to PayU...";
-
-      try {
-        const csrfToken = this.getCSRFToken();
-        const response = await fetch("/api/initiate-payment/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
-          },
-          body: JSON.stringify({ payment_method: "card" }),
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          // Submit to PayU
-          const form = document.createElement("form");
-          form.method = "POST";
-          form.action = data.payu_url;
-          form.style.display = "none";
-
-          Object.entries(data.payu_params).forEach(([key, value]) => {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = key;
-            input.value = value;
-            form.appendChild(input);
-          });
-
-          document.body.appendChild(form);
-          form.submit();
-        } else {
-          alert("Payment error: " + data.error);
-          btn.disabled = false;
-          btn.textContent = "Proceed to Checkout";
-        }
-      } catch (error) {
-        alert("Network error: " + error.message);
-        btn.disabled = false;
-        btn.textContent = "Proceed to Checkout";
-      } finally {
-        this.isProcessing = false;
-      }
-    }
-
     openCart() {
       this.cartSidebar.classList.add("active");
       this.cartOverlay.classList.add("active");
@@ -436,14 +416,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     getCSRFToken() {
-      // Try meta tag first (Django's recommended way)
       const metaTag = document.querySelector('meta[name="csrf-token"]');
       if (metaTag) {
         console.log("CSRF Token from meta tag:", metaTag.content);
         return metaTag.content;
       }
 
-      // Fallback to cookie
       const cookie = document.cookie.match(/csrftoken=([\w-]+)/);
       if (cookie) {
         console.log("CSRF Token from cookie:", cookie[1]);

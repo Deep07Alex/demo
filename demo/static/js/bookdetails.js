@@ -1,3 +1,5 @@
+// Replace your book_detail.js with this:
+
 // Quantity Controls
 function increaseQty() {
     let q = document.getElementById("qty-display");
@@ -11,12 +13,12 @@ function decreaseQty() {
     }
 }
 
-// Buy Now - Simplified and Robust
+// Buy Now - Fixed with Debug Logging
 document.addEventListener("DOMContentLoaded", function() {
     const buyNowBtn = document.querySelector('.buy-now');
     
     if (buyNowBtn) {
-        console.log("✅ Buy Now button found and listener attached");
+        console.log("✅ Buy Now button found");
         
         buyNowBtn.addEventListener('click', async function(e) {
             e.preventDefault();
@@ -27,24 +29,38 @@ document.addEventListener("DOMContentLoaded", function() {
             const image = this.dataset.image;
             const quantity = parseInt(document.getElementById("qty-display").innerText);
             
-            console.log('🛒 Buy Now initiated:', { bookId, title, quantity });
+            console.log('🛒 Buy Now initiated:', { bookId, title, quantity, price, image });
             
             try {
+                // Get CSRF token
+                const csrfToken = window.cartManager?.getCSRFToken() || '';
+                console.log('🗝️ CSRF Token:', csrfToken);
+                
+                if (!csrfToken) {
+                    alert('CSRF token not found. Please refresh the page.');
+                    return;
+                }
+                
                 // Clear existing cart first
-                await fetch('/cart/clear/', {
+                console.log('🧹 Clearing cart...');
+                const clearResponse = await fetch('/cart/clear/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCSRFToken()
+                        'X-CSRFToken': csrfToken
                     }
                 });
                 
+                const clearData = await clearResponse.json();
+                console.log('✅ Cart cleared:', clearData);
+                
                 // Add the book
+                console.log('➕ Adding book to cart...');
                 const addResponse = await fetch('/cart/add/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCSRFToken()
+                        'X-CSRFToken': csrfToken
                     },
                     body: JSON.stringify({
                         id: bookId,
@@ -58,19 +74,36 @@ document.addEventListener("DOMContentLoaded", function() {
                 const addData = await addResponse.json();
                 console.log('✅ Book added:', addData);
                 
+                if (!addData.success) {
+                    throw new Error(addData.error || 'Failed to add book');
+                }
+                
                 // Update quantity if needed
                 if (quantity > 1) {
-                    await fetch('/cart/update/', {
+                    console.log('🔢 Updating quantity to', quantity);
+                    const updateResponse = await fetch('/cart/update/', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRFToken': getCSRFToken()
+                            'X-CSRFToken': csrfToken
                         },
                         body: JSON.stringify({
                             key: `book_${bookId}`,
                             quantity: quantity
                         })
                     });
+                    
+                    const updateData = await updateResponse.json();
+                    console.log('✅ Quantity updated:', updateData);
+                }
+                
+                // Verify cart before redirect
+                const verifyResponse = await fetch('/cart/items/');
+                const verifyData = await verifyResponse.json();
+                console.log('🛒 Final cart contents:', verifyData);
+                
+                if (verifyData.cart_count === 0) {
+                    throw new Error('Cart is empty after adding items!');
                 }
                 
                 // Redirect to checkout
@@ -105,15 +138,3 @@ setInterval(function () {
         document.getElementById("countdown").innerHTML = "Expired";
     }
 }, 1000);
-
-// CSRF Token Helper
-function getCSRFToken() {
-    const metaTag = document.querySelector('meta[name="csrf-token"]');
-    if (metaTag) return metaTag.content;
-    
-    const cookie = document.cookie.match(/csrftoken=([\w-]+)/);
-    if (cookie) return cookie[1];
-    
-    console.warn("⚠️ CSRF token not found!");
-    return '';
-}

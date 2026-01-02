@@ -5,6 +5,8 @@ from django.views.decorators.http import require_POST
 from homepage.models import Book
 from product_categories.models import Product
 import json
+from django.views.decorators.cache import never_cache
+from django.utils.cache import add_never_cache_headers
 
 def normalize_title(title):
     return title.lower().strip().replace(' ', '_')
@@ -68,10 +70,10 @@ def buy_now(request, book_id):
         'image': book.image.url if book.image else '',
         'quantity': 1
     }
-    request.session['cart'] = cart
-    request.session.modified = True
+    save_cart(request, cart)
     
     return redirect('checkout')
+
 
 def get_cart(request):
     return request.session.get('cart', {})
@@ -263,3 +265,35 @@ def contact_information(request):
 
 def bulk_purchase(request):
     return render(request, 'pages/bulk.html')
+
+def return_policy(request):
+    return render(request, 'pages/return_policy.html')
+
+def privacy_policy(request):
+    return render(request, 'pages/privacy_policy.html')
+
+def book_detail(request, slug):
+    """Display individual book details"""
+    book = get_object_or_404(Book, slug=slug)
+    return render(request, 'pages/book_detail.html', {'book': book})
+
+def category_books(request, category):
+    """Display books by category"""
+    books = Book.objects.filter(category__iexact=category)
+    return render(request, 'pages/category_books.html', {
+        'books': books,
+        'category': category
+    })
+    
+def book_detail(request, slug):
+    """Display individual book details"""
+    book = get_object_or_404(Book, slug=slug)
+    return render(request, 'pages/book_detail.html', {'book': book})
+
+def category_books(request, category):
+    """Display books by category"""
+    books = Book.objects.filter(category__iexact=category)
+    return render(request, 'pages/category_books.html', {
+        'books': books,
+        'category': category
+    })
