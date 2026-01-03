@@ -213,11 +213,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const data = await response.json();
-        console.log('📦 Cart data received:', data); // 🔥 DEBUG LOG
+        console.log("📦 Cart data received:", data);
+
+        // Support both cart_count and cartcount from backend
+        const count = data.cart_count ?? data.cartcount ?? 0;
 
         if (this.cartCountEl) {
-          if (data.cart_count > 0) {
-            this.cartCountEl.textContent = data.cart_count;
+          if (count > 0) {
+            this.cartCountEl.textContent = count;
             this.cartCountEl.style.display = "flex";
           } else {
             this.cartCountEl.style.display = "none";
@@ -226,13 +229,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const badge = document.getElementById("cartCountBadge");
         if (badge) {
-          if (data.cart_count > 0) {
-            badge.textContent = data.cart_count;
+          if (count > 0) {
+            badge.textContent = count;
             badge.style.display = "flex";
           } else {
             badge.style.display = "none";
           }
         }
+
 
         this.renderCartItems(
           data.items || [],

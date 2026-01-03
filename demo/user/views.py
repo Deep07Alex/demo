@@ -4,7 +4,6 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.core.cache import cache
-
 from .models import Order, OrderItem
 from .payu_utils import (
     generate_payu_hash,
@@ -25,12 +24,13 @@ from .email_otp_utils import (
 
 import json
 import logging
+from django.views.decorators.http import require_GET
+
 
 logger = logging.getLogger(__name__)
 
 
 # ---------------- CART HELPERS ---------------- #
-
 def get_cart(request):
     return request.session.get("cart", {})
 
@@ -41,7 +41,6 @@ def save_cart(request, cart):
 
 
 # ---------------- CART API ---------------- #
-
 @require_POST
 def clear_cart(request):
     """Clear all items from cart"""
@@ -112,13 +111,13 @@ def get_cart_addons(request):
     addon_total = sum(
         addon_prices.get(key, 0) for key, selected in addons.items() if selected
     )
+
     return JsonResponse({"addons": addons, "addon_total": addon_total})
 
 
 def get_cart_items(request):
     """Get cart items for display"""
-    cart = request.session.get("cart", {})
-    logger.info(f"SESSION CART CONTENTS: {cart}")
+    cart = get_cart(request)
     items = list(cart.values())
 
     addons = request.session.get("cart_addons", {})
@@ -127,23 +126,26 @@ def get_cart_items(request):
         addon_prices.get(key, 0) for key, selected in addons.items() if selected
     )
 
+    # Smart pricing
     total_books = sum(item["quantity"] for item in cart.values())
-    product_total = sum(float(item["price"]) * item["quantity"] for item in cart.values())
-
-    # Simple cart-level preview shipping (used in sidebar/cart page)
+    product_total = sum(
+        float(item["price"]) * item["quantity"] for item in cart.values()
+    )
     shipping = 0 if product_total >= 499 else 49.00
     discount = 100 if total_books >= 10 else 0
-    total = product_total + shipping + addon_total - discount
+
+    # Cart total must NOT include shipping â€“ only products + addons
+    cart_total = product_total + addon_total
 
     return JsonResponse(
         {
             "cart_count": sum(item["quantity"] for item in cart.values()),
             "items": items,
-            "addon_total": addon_total,
+            "addontotal": addon_total,
             "shipping": shipping,
             "discount": discount,
-            "total": total,
-            "total_books": total_books,
+            "total": cart_total,
+            "totalbooks": total_books,
         }
     )
 
@@ -224,11 +226,23 @@ def update_cart_quantity(request):
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
-# ---------------- CHECKOUT ---------------- #
+@require_GET
+def check_checkout_lock(request):
+    """Return whether checkout is locked for this session"""
+    return JsonResponse({"locked": bool(request.session.get("checkout_locked"))})
 
+# ---------------- CHECKOUT ---------------- #
 def checkout(request):
     """New checkout page with email verification"""
     try:
+        # If user already started a payment, do not allow going back to checkout
+        # if request.session.get("checkout_locked"):
+        #    return render(
+        #        request,
+        #        "pages/payment_failure.html",
+        #        {"error": "Payment already initiated. Please try again."},
+        #    )
+
         cart = request.session.get("cart", {})
         addons = request.session.get("cart_addons", {})
 
@@ -241,14 +255,13 @@ def checkout(request):
         subtotal = sum(
             float(item["price"]) * item["quantity"] for item in cart.values()
         )
+
         addon_prices = {"Bag": 30, "bookmark": 20, "packing": 20}
         addon_total = sum(
             addon_prices.get(key, 0) for key, selected in addons.items() if selected
         )
-        total_books = sum(item["quantity"] for item in cart.values())
 
-        # Initial estimate used only for template; final shipping is computed
-        # in initiate_payu_payment using payment method rules.
+        total_books = sum(item["quantity"] for item in cart.values())
         shipping = 0 if subtotal >= 499 else 49.00
         discount = 100 if total_books >= 10 else 0
         total = subtotal + shipping + addon_total - discount
@@ -284,7 +297,6 @@ def checkout(request):
 
 
 # ---------------- EMAIL OTP ---------------- #
-
 @require_POST
 def send_email_otp(request):
     """Send OTP to email"""
@@ -296,15 +308,12 @@ def send_email_otp(request):
             return JsonResponse({'success': False, 'error': 'Invalid email address'})
 
         otp = generate_otp()
-
         success, message = send_email_otp_util(email, otp)
-
         if not success:
             logger.error(f"Failed to send OTP email: {message}")
             return JsonResponse({'success': False, 'error': 'Could not send OTP email'})
 
         store_otp_in_cache(email, otp)
-
         return JsonResponse({'success': True, 'message': 'OTP sent to your email'})
     except Exception as e:
         logger.error(f"Send email OTP error: {str(e)}", exc_info=True)
@@ -341,7 +350,6 @@ def verify_email_otp(request):
 
 
 # ---------------- PAYU PAYMENT ---------------- #
-
 @require_POST
 def initiate_payu_payment(request):
     """Initiate PayU payment after email verification"""
@@ -351,6 +359,9 @@ def initiate_payu_payment(request):
             return JsonResponse(
                 {"success": False, "error": "Please verify your email first"}
             )
+
+        # ðŸ”’ lock checkout once payment starts
+        request.session["checkout_locked"] = True
 
         cart = request.session.get("cart", {})
         addons = request.session.get("cart_addons", {})
@@ -375,10 +386,12 @@ def initiate_payu_payment(request):
         subtotal = sum(
             float(item["price"]) * item["quantity"] for item in cart.values()
         )
+
         addon_prices = {"Bag": 30, "bookmark": 20, "packing": 20}
         addon_total = sum(
             addon_prices.get(key, 0) for key, selected in addons.items() if selected
         )
+
         total_books = sum(item["quantity"] for item in cart.values())
 
         # base courier from Shiprocket (not used in pricing rules currently)
@@ -388,10 +401,10 @@ def initiate_payu_payment(request):
         payment_method = data.get("payment_method", "payu")
 
         # Admin shipping rules:
-        # - subtotal >= 499 & PayU      -> shipping = 0
-        # - subtotal >= 499 & COD       -> shipping = 49
-        # - subtotal < 499  & PayU      -> shipping = 40
-        # - subtotal < 499  & COD       -> shipping = 89
+        # - subtotal >= 499 & PayU -> shipping = 0
+        # - subtotal >= 499 & COD -> shipping = 49
+        # - subtotal < 499 & PayU -> shipping = 40
+        # - subtotal < 499 & COD -> shipping = 89
         if subtotal >= 499:
             if payment_method == "payu":
                 shipping = 0.0
@@ -452,6 +465,7 @@ def initiate_payu_payment(request):
                 )
 
         txnid = generate_transaction_id()
+
         payu_params = {
             "key": settings.PAYU_MERCHANT_KEY,
             "txnid": txnid,
@@ -468,6 +482,7 @@ def initiate_payu_payment(request):
             "udf4": delivery_type,
             "udf5": str(shipping),
         }
+
         payu_params["hash"] = generate_payu_hash(payu_params)
 
         request.session["payu_txnid"] = txnid
@@ -487,9 +502,150 @@ def initiate_payu_payment(request):
         return JsonResponse({"success": False, "error": str(e)})
 
 
+@require_POST
+def place_cod_order(request):
+    """Create COD order without PayU and send to Shiprocket"""
+    try:
+        verified_email = request.session.get("verified_email")
+        if not verified_email:
+            return JsonResponse(
+                {"success": False, "error": "Please verify your email first"}
+            )
+
+        # ðŸ”’ lock checkout once COD processing starts
+        request.session["checkout_locked"] = True
+
+        cart = request.session.get("cart", {})
+        addons = request.session.get("cart_addons", {})
+        data = json.loads(request.body)
+
+        if not cart:
+            return JsonResponse({"success": False, "error": "Cart is empty"})
+
+        full_name = data.get("fullname", "").strip()
+        phone = data.get("phone", "").strip()
+        address = data.get("address", "").strip()
+        city = data.get("city", "").strip()
+        state = data.get("state", "").strip()
+        pincode = data.get("pincode", "").strip()
+        delivery_type = data.get("delivery", "Standard (3-6 days)")
+
+        if not all([full_name, phone, address, city, state, pincode]):
+            return JsonResponse(
+                {"success": False, "error": "All fields are required"}
+            )
+
+        # Same pricing logic as PayU view, but payment_method is cod
+        subtotal = sum(
+            float(item["price"]) * item["quantity"] for item in cart.values()
+        )
+
+        addon_prices = {"Bag": 30, "bookmark": 20, "packing": 20}
+        addon_total = sum(
+            addon_prices.get(key, 0) for key, selected in addons.items() if selected
+        )
+
+        total_books = sum(item["quantity"] for item in cart.values())
+        payment_method = "cod"
+
+        if subtotal >= 499:
+            shipping = 49.0  # only handover charge
+        else:
+            shipping = 40.0 + 49.0  # 40 shipping + 49 handover
+
+        discount = 100 if total_books >= 10 else 0
+        total = subtotal + shipping + addon_total - discount
+
+        order = Order.objects.create(
+            email=verified_email,
+            verified_email=verified_email,
+            phone_number=phone,
+            full_name=full_name,
+            address=address,
+            city=city,
+            state=state,
+            pin_code=pincode,
+            delivery_type=delivery_type,
+            payment_method=payment_method,
+            subtotal=subtotal,
+            shipping=shipping,
+            discount=discount,
+            total=total,
+            status="processing",  # COD, payment on delivery
+        )
+
+        for key, item in cart.items():
+            OrderItem.objects.create(
+                order=order,
+                item_type=item["type"],
+                item_id=item["id"],
+                title=item["title"],
+                price=float(item["price"]),
+                quantity=item["quantity"],
+                image_url=item.get("image", ""),
+            )
+
+        addon_names = {"Bag": "Bag", "bookmark": "Bookmark", "Packing": "Packing"}
+        for addon_key, selected in addons.items():
+            if selected:
+                OrderItem.objects.create(
+                    order=order,
+                    item_type="addon",
+                    item_id=0,
+                    title=addon_names.get(addon_key, addon_key),
+                    price=addon_prices[addon_key],
+                    quantity=1,
+                    image_url="",
+                )
+
+        # Create Shiprocket order as COD
+        shiprocket_success = False
+        shiprocket_data = None
+        try:
+            shiprocket = ShiprocketAPI()
+            shiprocket_success, shiprocket_result = shiprocket.create_order(
+                order, order.items.all()
+            )
+            if shiprocket_success:
+                order.shiprocket_order_id = shiprocket_result.get("order_id")
+                order.awb_number = shiprocket_result.get("awb_code") or ""
+                order.courier_name = shiprocket_result.get("courier_name") or ""
+                order.label_url = shiprocket_result.get("label_url")
+                order.save()
+                shiprocket_data = shiprocket_result
+        except Exception as e:
+            logger.error(f"Shiprocket COD order error: {str(e)}", exc_info=True)
+
+        # Emails
+        send_admin_order_notification(order, order.items.all())
+        send_customer_order_confirmation(order, order.items.all())
+
+        # Clear cart
+        request.session.pop("cart", None)
+        request.session.pop("cart_addons", None)
+        request.session.pop("verified_email", None)
+
+        # URL of your success page (GET version, not PayU POST)
+        success_url = f"/payment/success/?order_id={order.id}"
+
+        return JsonResponse(
+            {"success": True, "redirect_url": success_url,
+             "shiprocket_success": shiprocket_success}
+        )
+
+    except Exception as e:
+        logger.error(f"place_cod_order error: {str(e)}", exc_info=True)
+        return JsonResponse({"success": False, "error": str(e)})
+
+
 @csrf_exempt
 def payment_success(request):
-    """Handle successful PayU payment and create Shiprocket order"""
+    """
+    PayU success (POST) + COD success page (GET).
+
+    POST: verify hash, create Shiprocket order, send emails.
+    GET: just show success for an existing order_id (used by COD).
+    """
     if request.method == "POST":
         response_data = request.POST.dict()
         received_hash = response_data.get("hash", "")
@@ -523,12 +679,10 @@ def payment_success(request):
                             order.awb_number = shiprocket_result.get("awb_code") or ""
                             order.courier_name = shiprocket_result.get("courier_name") or ""
                             order.label_url = shiprocket_result.get("label_url")
-
                             if shiprocket_result.get("awb_code"):
                                 order.status = "shipped"
                             else:
                                 order.status = "processing"
-
                             order.save()
                             shiprocket_data = shiprocket_result
                         else:
@@ -549,6 +703,7 @@ def payment_success(request):
                     request.session.pop("payu_txnid", None)
                     request.session.pop("order_id", None)
                     request.session.pop("verified_email", None)
+                    request.session.pop("checkout_locked", None)
 
                     return render(
                         request,
@@ -582,6 +737,41 @@ def payment_success(request):
                 {"error": "Security verification failed"},
             )
 
+    # ---- NEW: handle COD / direct success redirect ----
+    if request.method == "GET":
+        order_id = request.GET.get("order_id")
+        if not order_id:
+            return render(
+                request,
+                "pages/payment_failure.html",
+                {"error": "Missing order id"},
+            )
+
+        try:
+            order = Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            return render(
+                request,
+                "pages/payment_failure.html",
+                {"error": "Order not found"},
+            )
+
+        # For COD, order + Shiprocket already created in place_cod_order
+        # âœ… allow fresh checkout after COD success
+        request.session.pop("checkout_locked", None)
+
+        return render(
+            request,
+            "pages/payment_success.html",
+            {
+                "order": order,
+                "shiprocket_data": None,
+                "shiprocket_status": "COD order placed",
+                "notification_sent": True,
+            },
+        )
+
+    # any other HTTP method
     return render(
         request,
         "pages/payment_failure.html",
@@ -592,6 +782,9 @@ def payment_success(request):
 @csrf_exempt
 def payment_failure(request):
     """Handle failed/cancelled PayU payment"""
+    # âœ… allow fresh checkout after showing failure
+    request.session.pop("checkout_locked", None)
+
     if request.method == "POST":
         response_data = request.POST.dict()
         order_id = response_data.get("udf1")
@@ -615,7 +808,6 @@ def payment_failure(request):
 
 
 # ---------------- SHIPROCKET WEBHOOK ---------------- #
-
 @csrf_exempt
 def shiprocket_webhook(request):
     """Handle Shiprocket webhook for tracking updates"""
@@ -641,11 +833,10 @@ def shiprocket_webhook(request):
             )
             return JsonResponse({"status": "unauthorized"}, status=401)
 
-        logger.info("✅ Token verified successfully!")
-
+        logger.info("âœ… Token verified successfully!")
         data = json.loads(payload)
-        # TODO: map data into Order.tracking_data / shiprocket_status here
 
+        # TODO: map data into Order.tracking_data / shiprocket_status here
         return JsonResponse({"status": "success"}, status=200)
     except json.JSONDecodeError:
         return JsonResponse({"status": "invalid_json"}, status=400)
@@ -655,7 +846,6 @@ def shiprocket_webhook(request):
 
 
 # ---------------- SHIPPING QUOTE ---------------- #
-
 @require_POST
 def calculate_shipping(request):
     """Calculate shipping rates for given pincode"""
@@ -684,7 +874,6 @@ def calculate_shipping(request):
         package_height = 5 if total_items == 1 else total_items * 2
 
         pickup_pincode = settings.SHIPROCKET_PICKUP_PINCODE
-
         shiprocket = ShiprocketAPI()
         success, rates = shiprocket.calculate_shipping_rates(
             pickup_pincode=pickup_pincode,
@@ -731,6 +920,7 @@ def calculate_shipping(request):
                     "total_charge": 99.0,
                 },
             ]
+
             return JsonResponse(
                 {
                     "success": True,
@@ -752,3 +942,32 @@ def return_policy(request):
 
 def privacy_policy(request):
     return render(request, "pages/privacy_policy.html")
+
+
+# ---------------- NEW: COMMON REDIRECT VIEW ---------------- #
+def payment_redirect(request):
+    """
+    Common redirect page:
+    - mode=payu: show spinner + auto-submit PayU form
+    - mode=cod: show spinner + then go to success page
+    """
+    mode = request.GET.get("mode", "payu")
+    context = {"mode": mode}
+
+    if mode == "cod":
+        context["order_id"] = request.GET.get("order_id", "")
+        return render(request, "payment_redirect.html", context)
+
+    payu_url = request.session.get("payu_url")
+    payu_params = request.session.get("payu_params")
+
+    if not payu_url or not payu_params:
+        return render(
+            request,
+            "pages/payment_failure.html",
+            {"error": "Payment session expired. Please try again."},
+        )
+
+    context["payu_url"] = payu_url
+    context["params"] = payu_params
+    return render(request, "payment_redirect.html", context)

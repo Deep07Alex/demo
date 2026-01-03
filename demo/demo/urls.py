@@ -4,19 +4,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.decorators.csrf import csrf_exempt
 from . import views as demo_views
-from user import views as user_views
+from user import views as user_views  # only for webhook
 
 urlpatterns = [
     # ============ WEBHOOKS ============
-    # Use this ONE URL in Shiprocket:
-    # https://webhook.tempgenpro.com/webhook/shipment/
     path(
         "webhook/shipment/",
         csrf_exempt(user_views.shiprocket_webhook),
         name="shipment_webhook",
     ),
 
-    # ============ HOMEPAGE & PAGES ============
+    # ============ HOMEPAGE & PAGES (demo.views) ============
     path("", include("homepage.urls")),
     path("aboutus/", demo_views.Aboutus, name="aboutus"),
     path("contactinformation/", demo_views.contact_information, name="contactinformation"),
@@ -33,14 +31,9 @@ urlpatterns = [
     # ============ PRODUCT CATEGORIES ============
     path("productcatagory/", include("product_categories.urls")),
 
-    # ============ CART & CHECKOUT ============
-    path("cart/", include("user.urls")),
-    path("checkout/", user_views.checkout, name="checkout"),
-    path("api/", include("user.urls")),
-
-    # ============ PAYMENT ============
-    path("payment/success/", user_views.payment_success, name="payment_success"),
-    path("payment/failure/", user_views.payment_failure, name="payment_failure"),
+    # ============ USER APP (cart, checkout, payment, APIs) ============
+    # Mount once at root so URLs are exactly /cart/..., /checkout/, /api/...
+    path("", include("user.urls")),
 
     # ============ ADMIN ============
     path("admin/", admin.site.urls),
