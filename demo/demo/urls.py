@@ -17,6 +17,7 @@ urlpatterns = [
     # ============ HOMEPAGE & PAGES (demo.views) ============
     path("", include("homepage.urls")),
     path("aboutus/", demo_views.Aboutus, name="aboutus"),
+    path("bulkpurchase/", demo_views.bulk_purchase, name="bulk_purchase"),
     path("contactinformation/", demo_views.contact_information, name="contactinformation"),
     path("search/", demo_views.search, name="search"),
     path("search/suggestions/", demo_views.search_suggestions, name="search_suggestions"),

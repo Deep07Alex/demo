@@ -297,12 +297,41 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalEl = document.getElementById("totalAmount");
 
     if (!data.items || data.items.length === 0) {
-      summaryEl.innerHTML =
-        '<p class="text-gray-500">Cart is empty</p>';
+      summaryEl.innerHTML = '<p class="text-gray-500">Cart is empty</p>';
       return;
     }
 
-    summaryEl.innerHTML = data.items
+    let html = "";
+
+    // Render add-ons first if selected
+    if (data.addons) {
+      const addonInfo = {
+        Bag: { name: "Bag", price: 30, image: "todebag.jpg" },
+        bookmark: { name: "Bookmark", price: 20, image: "book_mark.jpg" },
+        packing: { name: "Gift Wrap", price: 20, image: "giftwrap.webp" },
+      };
+
+      for (const [key, selected] of Object.entries(data.addons)) {
+        if (selected && addonInfo[key]) {
+          const addon = addonInfo[key];
+          html += `
+          <div class="flex items-center space-x-3 text-sm">
+            <img src="/static/images/${addon.image}" 
+                 alt="${addon.name}"
+                 class="w-10 h-10 object-cover rounded"
+                 onerror="this.src='/static/images/placeholder.png'">
+            <div class="flex-1">
+              <p class="font-medium truncate">${addon.name}</p>
+              <p class="text-gray-500">₹${addon.price.toFixed(2)}</p>
+            </div>
+          </div>
+        `;
+        }
+      }
+    }
+
+    // Then render book items
+    html += data.items
       .map(
         (item) => `
         <div class="flex items-center space-x-3 text-sm">
@@ -320,6 +349,9 @@ document.addEventListener("DOMContentLoaded", function () {
       )
       .join("");
 
+    summaryEl.innerHTML = html;
+
+    // Update pricing (subtotal already includes add-ons from backend)
     const subtotal = parseFloat(data.total) || 0;
     const discount = parseFloat(data.discount) || 0;
     const shippingCost = getDisplayShipping(subtotal, selectedPaymentMethod);
@@ -330,7 +362,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const total = subtotal + shippingCost - discount;
     totalEl.textContent = `₹${total.toFixed(2)}`;
-    updateTotalAmount();
   }
 
   // =========================================================================

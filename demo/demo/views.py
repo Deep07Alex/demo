@@ -5,6 +5,16 @@ from django.db.models import Q
 from homepage.models import Book
 from product_categories.models import Product
 
+import logging
+from django.conf import settings
+from django.core.mail import send_mail
+from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
+import json
+
+logger = logging.getLogger(__name__)
+
+
 
 def normalize_title(title):
     return title.lower().strip().replace(" ", "_")
@@ -112,7 +122,84 @@ def contact_information(request):
     return render(request, "pages/contactinformation.html")
 
 
+@require_http_methods(["GET", "POST"])
 def bulk_purchase(request):
+    """Handle bulk purchase inquiry form"""
+    if request.method == "POST":
+        try:
+            # Parse JSON or FormData
+            if request.content_type == 'application/json':
+                data = json.loads(request.body)
+            else:
+                data = request.POST
+            
+            name = data.get('name', '').strip()
+            email = data.get('email', '').strip()
+            phone = data.get('phone', '').strip()
+            comment = data.get('comment', '').strip()
+            
+            # Validation
+            if not all([name, email, phone, comment]):
+                return JsonResponse({
+                    "success": False, 
+                    "error": "All fields are required"
+                }, status=400)
+            
+            if '@' not in email:
+                return JsonResponse({
+                    "success": False, 
+                    "error": "Invalid email address"
+                }, status=400)
+            
+            # Compose email
+            subject = f'🛒 Bulk Purchase Inquiry from {name}'
+            
+            message = f"""
+Hello Admin,
+
+A new bulk purchase inquiry has been submitted!
+
+═══════════════════════════════════════
+
+👤 CUSTOMER DETAILS:
+Name: {name}
+Email: {email}
+Phone: {phone}
+
+📋 INQUIRY DETAILS:
+{comment}
+
+═══════════════════════════════════════
+
+Please respond within 24 hours.
+
+Family BookStore System
+            """.strip()
+            
+            # Send to cs.familybookstore@gmail.com
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=['cs.familybookstore@gmail.com'],
+                fail_silently=False,
+            )
+            
+            logger.info(f"Bulk inquiry sent from {email}")
+            
+            return JsonResponse({
+                "success": True, 
+                "message": "Your inquiry has been sent! We'll contact you within 24 hours."
+            })
+            
+        except Exception as e:
+            logger.error(f"Bulk purchase error: {str(e)}", exc_info=True)
+            return JsonResponse({
+                "success": False, 
+                "error": "Failed to send. Please try again or contact us directly."
+            }, status=500)
+    
+    # GET request - render the page
     return render(request, "pages/bulk.html")
 
 

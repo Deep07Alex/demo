@@ -134,13 +134,14 @@ def get_cart_items(request):
     shipping = 0 if product_total >= 499 else 49.00
     discount = 100 if total_books >= 10 else 0
 
-    # Cart total must NOT include shipping â€“ only products + addons
+    # Cart total must NOT include shipping â€" only products + addons
     cart_total = product_total + addon_total
 
     return JsonResponse(
         {
             "cart_count": sum(item["quantity"] for item in cart.values()),
             "items": items,
+            "addons": addons,  # Add this line to include selected add-ons
             "addontotal": addon_total,
             "shipping": shipping,
             "discount": discount,
@@ -148,7 +149,6 @@ def get_cart_items(request):
             "totalbooks": total_books,
         }
     )
-
 
 @require_POST
 def remove_from_cart(request):
